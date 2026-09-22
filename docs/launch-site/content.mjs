@@ -1,5 +1,5 @@
 import {resultCatalog} from './test-results-view.mjs';
-export const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms'];
+export const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms','support'];
 export const text = (en,ko) => ({en,ko});
 export const sources = {
   presidentEmail:'uikangee@postech.ac.kr',
@@ -15,7 +15,7 @@ export const sources = {
 };
 export const nav = [
   ['projects','Projects','프로젝트'],['research','Research','연구'],['records','Records','기록'],
-  ['news','News','소식'],['about','About','소개']
+  ['news','News','소식'],['about','About','소개'],['support','Support & Contact','후원·문의']
 ];
 export const pageTitles = {
   aircraft:text('Aircraft','항공기'),records:text('Records','기록'),
@@ -24,7 +24,8 @@ export const pageTitles = {
   index:text('PSI — Student aerospace at POSTECH','PSI — 포스텍 항공우주연구회'),
   projects:text('Projects','프로젝트'),pslv:text('PSLV rocket programme','PSLV 로켓 프로젝트'),
   research:text('Research','연구'),learning:text('Learning at PSI','PSI에서 배우기'),
-  about:text('About PSI','PSI 소개'),news:text('News','소식'),join:text('Join PSI','PSI와 함께하기')
+  about:text('About PSI','PSI 소개'),news:text('News','소식'),join:text('Join PSI','PSI와 함께하기'),
+  support:text('Support & Contact','후원·문의')
 };
 const drive = id => `https://drive.google.com/file/d/${id}/view`;
 export const research = [

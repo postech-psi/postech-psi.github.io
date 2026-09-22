@@ -50,7 +50,13 @@ export async function exportSite(output = repository) {
     if (!/\.(?:webp|png|mp4|woff2)$/.test(name) && !['archive-telemetry.json', 'Pretendard-LICENSE.txt', 'supporter-sources.md'].includes(name)) throw new Error(`Unexpected public asset: ${name}`);
     outputFiles.set(`assets/${name}`, await readFile(join(source, 'assets', name)));
   }
-  for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records'], ['contact.html', 'about.html#participation', 'Join PSI']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
+  for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
+  for (const lang of ['en','ko']) {
+    const name=`${lang==='ko'?'ko/':''}contact.html`;
+    const content=await readFile(join(source,name));
+    if(content.toString()!==render('contact',lang))throw new Error(`Stale page: ${name}; run node docs/launch-site/build.mjs first`);
+    outputFiles.set(name,content);
+  }
   // Nested results data is exported only through the reviewed immutable lock.
   const resultLock = JSON.parse(await readFile(join(source, 'assets/results/source-lock.json'), 'utf8'));
   for (const name of resultLock.publicFiles) {

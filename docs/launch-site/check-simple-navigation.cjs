@@ -39,7 +39,7 @@ async function checkSimpleNavigation(browser){
   assert.equal(await page.locator('footer').evaluate(el=>el.inert),false);
   await page.setViewportSize({width:1440,height:1000});
   await page.goto(`${base}/${prefix}pslv.html`);
-  assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),5,'Five main destinations keep the navigation focused');
+  assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),6,'Six main destinations include support and contact');
   assert.equal(await page.locator('h1').count(),1);
   assert.equal(await page.locator('[data-system][open]').count(),0,'Systems start collapsed');
   const originalPath=new URL(page.url()).pathname;

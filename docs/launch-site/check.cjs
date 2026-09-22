@@ -13,10 +13,11 @@ const { checkPolish } = require('./check-polish.cjs');
 const { checkEngineering } = require('./check-engineering.cjs');
 const { checkSimpleNavigation } = require('./check-simple-navigation.cjs');
 const { checkSupporters } = require('./check-supporters.cjs');
+const { checkSupportContact } = require('./check-support-contact.cjs');
 const { checkCopy } = require('./check-copy.cjs');
-const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 (async () => {
+  const {routes}=await import('./content.mjs');
   checkCopy();
   for (const lang of ['', 'ko/']) for (const route of routes) assert.ok(fs.existsSync(path.join(__dirname,lang,`${route}.html`)),`Missing page: ${lang}${route}.html`);
   const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
@@ -31,6 +32,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await checkPolish(browser);
     await checkEngineering(browser);
     await checkSupporters(browser);
+    await checkSupportContact(browser);
     const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
     const page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));
@@ -97,6 +99,6 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:path.join(__dirname,'qa-mobile.png')});
     assert.deepEqual(errors,[],'Browser errors');
-    console.log('PASS: 26 bilingual routes; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; hardware tabs; font/image loading; browser errors.');
+    console.log(`PASS: ${routes.length*2} bilingual routes; support contact and campus map; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; hardware tabs; font/image loading; browser errors.`);
   } finally { await browser.close(); }
 })().catch(error => { console.error(error);process.exitCode=1; });

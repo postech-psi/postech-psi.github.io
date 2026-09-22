@@ -28,7 +28,7 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('[data-program]').count(),2);
   assert.equal(await page.locator('.testing-feature a.test-action').first().getAttribute('href'),'projects.html#test-results');
   await page.goto(base+prefix+'projects.html');
-  assert.deepEqual(await page.locator('.site-nav > a, .nav-projects > a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html']);
+  assert.deepEqual(await page.locator('.site-nav > a, .nav-projects > a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html','support.html']);
   assert.equal(await page.locator('[data-project-tab]').count(),2);
   await page.locator('[data-project-tab="aircraft"]').click();
   assert.match(page.url(),/projects\.html#project-aircraft$/);

@@ -19,4 +19,4 @@ for(const lang of ['en','ko']) for(const route of routes){
   assert.deepEqual([...bytes.subarray(0,8)],[137,80,78,71,13,10,26,10],'Referenced icon is a real PNG');
   assert.ok(bytes.readUInt32BE(16)>0&&bytes.readUInt32BE(20)>0,'Icon contains image dimensions');
 }
-console.log('PASS all 26 bilingual pages declare the existing PSI emblem with prefix-safe URLs');
+console.log(`PASS all ${routes.length*2} bilingual pages declare the existing PSI emblem with prefix-safe URLs`);

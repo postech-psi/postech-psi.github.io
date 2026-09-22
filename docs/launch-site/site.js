@@ -527,4 +527,25 @@
     });
     filter();
   }
+  const supportForm=document.querySelector('[data-support-form]');
+  if(supportForm){
+    const draft=document.querySelector('[data-support-draft]');
+    supportForm.addEventListener('submit',event=>{
+      event.preventDefault();
+      if(!supportForm.reportValidity())return;
+      const fields=new FormData(supportForm);
+      const category=fields.get('type')==='general'?'general':'support';
+      const subject=category==='general'?t('PSI general enquiry','PSI 일반 문의'):t('PSI support enquiry','PSI 후원 문의');
+      const body=[
+        `${t('Name','이름')}: ${String(fields.get('name')||'').trim()}`,
+        `${t('Affiliation','소속')}: ${String(fields.get('affiliation')||'').trim()}`,
+        `${t('Reply email','답장 이메일')}: ${String(fields.get('email')||'').trim()}`,
+        `${t('Enquiry type','문의 유형')}: ${category}`,
+        '',String(fields.get('message')||'').trim()
+      ].join('\n');
+      draft.href=`${supportForm.getAttribute('action')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      draft.hidden=false;
+      draft.focus();
+    });
+  }
 })();
