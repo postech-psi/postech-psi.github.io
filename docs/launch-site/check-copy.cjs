@@ -20,6 +20,14 @@ function checkCopy() {
     assert.match(pslv, lang ? /비행 날짜와 기체는 확인되지/ : /flight date and vehicle are unconfirmed/);
     assert.match(pslv, lang ? /착륙이나 회수 완료를 확인할 수 없습니다/ : /landing and completed recovery are not established/);
     const about = read(lang, 'about');
+    assert.ok(!home.includes('data-program-choice'),'Homepage no longer offers a second project-switch control');
+    assert.ok(!about.includes(lang ? '가입과 활동 과정' : 'Joining and participating'));
+    assert.ok(!about.includes(lang ? '가입 관련 질문' : 'Membership questions'));
+    assert.ok(!about.includes(lang ? '교육과 노트북' : 'Education and notebooks'));
+    if(!lang){
+      assert.match(home,/programme/,'Use British programme in editorial copy');
+      assert.doesNotMatch([home,pslv,news,about].join(' '),/\b(?:rocket|PSLV) program\b/i);
+    }
     for (const name of ['Uikang Joo', 'Yeonho Kim', 'Taeho Lee', 'Jaeyoung Park', 'Jin-Tae Kim', 'Un-Seong Baik', 'Minsoo Kim', 'President', 'Vice President', 'Secretary', 'Avionics & TMS Lead', 'Faculty advisor', 'Former presidents']) assert.ok(about.includes(name), `Retain ${name}`);
     assert.ok(about.includes(lang ? '재정' : 'Finance'));
     for(const file of ['supporter-postech.png','supporter-postech-me.png','supporter-matlab.png','supporter-ansys.png'])assert.ok(about.includes(file),'Retain official supporter logos');

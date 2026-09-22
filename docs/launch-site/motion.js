@@ -111,15 +111,4 @@
     requestAnimationFrame(()=>target.scrollIntoView({behavior:'instant',block:'start'}));
   };
   revealHash();addEventListener('hashchange',revealHash);addEventListener('pageshow',revealHash);
-  document.querySelectorAll('[data-program-switch]').forEach(root=>{
-    const controls=root.querySelector('[data-program-choices]');
-    const panels=[...root.querySelectorAll('[data-program]')];
-    controls.hidden=false;root.dataset.enhanced='true';
-    const select=(id,motion=true)=>{
-      for(const panel of panels){panel.hidden=panel.dataset.program!==id;if(!panel.hidden&&motion)animate(panel,[{opacity:.25,transform:'translateY(18px)'},{opacity:1,transform:'none'}]);}
-      controls.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.programChoice===id)));
-    };
-    controls.addEventListener('click',event=>{const button=event.target.closest('button');if(button)select(button.dataset.programChoice);});
-    select('pslv',false);
-  });
 })();

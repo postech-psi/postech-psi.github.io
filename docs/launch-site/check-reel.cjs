@@ -24,13 +24,13 @@ async function checkReel(browser){
   await reel.locator('[data-reel-dot="3"]').click();assert.equal(await selected(),'3');
   await page.keyboard.press('ArrowRight');assert.equal(await selected(),'0');
   await reel.locator('[data-reel-toggle]').click();
-  await page.locator('[data-program-choice]').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
+  await page.locator('[data-program="pslv"] a').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
   await page.clock.runFor(15000);assert.equal(await selected(),'0','Explicit pause survives focus and hover exits');
   await reel.locator('[data-reel-next]').click();
-  await page.locator('[data-program-choice]').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
+  await page.locator('[data-program="pslv"] a').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
   await page.clock.runFor(15000);assert.equal(await selected(),'1','Navigation preserves explicit pause');
   await reel.locator('[data-reel-toggle]').click();
-  await page.locator('[data-program-choice]').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
+  await page.locator('[data-program="pslv"] a').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
   await page.clock.runFor(7001);assert.equal(await selected(),'2');
   await reel.hover();await page.clock.runFor(15000);assert.equal(await selected(),'2','Hover pauses autoplay');
   await page.mouse.move(0,0);
@@ -50,7 +50,7 @@ async function checkReel(browser){
   await page.clock.runFor(15000);assert.equal(await selected(),'0','Reduced-motion reload starts paused');
   await page.emulateMedia({reducedMotion:'no-preference'});
   await page.clock.runFor(15000);assert.equal(await selected(),'0','Preference change preserves paused state');
-  await reel.locator('[data-reel-toggle]').click();await page.locator('[data-program-choice]').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
+  await reel.locator('[data-reel-toggle]').click();await page.locator('[data-program="pslv"] a').first().evaluate(el=>el.focus({preventScroll:true}));await page.mouse.move(0,0);
   await page.clock.runFor(7001);assert.equal(await selected(),'1','Explicit play can resume the reel');
   await page.locator('footer').scrollIntoViewIfNeeded();await page.waitForTimeout(100);const offscreen=await selected();
   await page.clock.runFor(15000);assert.equal(await selected(),offscreen,'Offscreen reel remains still');

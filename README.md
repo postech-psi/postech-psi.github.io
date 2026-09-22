@@ -2,11 +2,11 @@
 
 The bilingual PSI website: [English](https://postech-psi.github.io/psi-website/) · [한국어](https://postech-psi.github.io/psi-website/ko/index.html).
 
-Thirteen routes in each language (26 generated pages, including the Learning redirect) cover two programs, PSLV and Aircraft, with Avionics and TMS engineering pages, five current studies, fifteen historical research records, news, the club, an event photo archive and joining PSI. The interface uses the club's identity, authentic field photography/video and self-hosted Pretendard. Project descriptions distinguish implemented, configured and verified behavior, with links to pinned repositories and the actual [test-results portal](https://postech-psi.github.io/test-results/).
+Fourteen routes in each language (28 generated pages, plus two Contact redirects) cover immediately switchable full PSLV and Aircraft panels, five current studies, fifteen historical research/award records, photo News, About and Support & Contact. The Projects navigation dropdown opens PSLV or Aircraft directly; old project URLs redirect there. The interface uses the authentic PSI logo in the header and footer, field photography/video and self-hosted Pretendard. Project descriptions distinguish implemented, configured and verified behaviour, with links to pinned repositories and the actual [test-results portal](https://postech-psi.github.io/test-results/).
 
 ## Edit and preview
 
-The editable source is `docs/launch-site/`, not the generated root HTML. Content is in `content.mjs`, `current-research.mjs` and `gallery-data.mjs`; layout is in `templates.mjs`, `program-pages.mjs`, `archive-view.mjs`, `reel-view.mjs` and `engineering-pages.mjs`; styling and interaction are in `site.css`, `program-pages.css` and `site.js`. See [the source guide](docs/launch-site/README.md) for media provenance and detailed behavior.
+The editable source is `docs/launch-site/`, not the generated root HTML. Content is in `content.mjs`, `current-research.mjs` and `gallery-data.mjs`; layout is in `templates.mjs`, `program-pages.mjs`, `archive-view.mjs`, `reel-view.mjs`, `engineering-pages.mjs` and `support-page.mjs`; styling and interaction are in `site.css`, `program-pages.css` and `site.js`. See [the source guide](docs/launch-site/README.md) for media provenance and detailed behaviour.
 
 ```sh
 node docs/launch-site/build.mjs
@@ -43,7 +43,7 @@ The exporter verifies generated HTML against the renderer and copies only public
 
 GitHub Pages uses the existing `main` branch/root Jekyll configuration. Commit the verified source **and** root export, then push `main`. The `pages build and deployment` workflow must finish successfully, and the public `release.json` revision must match the local one before considering a release deployed.
 
-Legacy source Markdown is retained but conflicting pages are excluded in `_config.yml`. Old Team, Events and Contact addresses redirect to About, News and Join. The existing Jekyll Shop, layouts and shop assets remain available at `/shop`; no checkout or fulfillment behavior was changed.
+Legacy source Markdown is retained but conflicting pages are excluded in `_config.yml`. Old Team and Events addresses redirect to About and News. Both `contact.html` and `ko/contact.html` redirect to `support.html#contact`; the Contact form only prepares a visitor-owned email draft and does not submit to a server. The printed POSTECH campus address and official map remain available if the approximate embedded map fails. `/assets/` has a no-index landing page rather than a listing. The existing Jekyll Shop, layouts and shop assets remain available at `/shop`; no checkout or fulfilment behaviour was changed.
 
 To preview the complete Jekyll output, including Shop, use the existing `Gemfile`: `bundle install` then `bundle exec jekyll serve`. Source-only static previews do not render the legacy Shop.
 

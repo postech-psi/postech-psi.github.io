@@ -15,8 +15,8 @@ async function checkHomepage(browser) {
     await page.goto(`${base}/${locale}index.html`);
     await check(`${locale || 'en/'} two program previews link to direct project panels`,async()=>{
       assert.equal(await page.locator('[data-program]').count(),2);
+      assert.equal(await page.locator('[data-program-choice]').count(),0,'The canonical Projects page owns the only project tabs');
       for(const id of ['pslv','aircraft']){
-        await page.locator(`[data-program-choice="${id}"]`).click();
         const preview=page.locator(`[data-program="${id}"]`);
         assert.ok(await preview.locator('h2').isVisible());
         await preview.locator('a').first().click();
