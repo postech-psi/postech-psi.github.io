@@ -341,6 +341,11 @@ html[lang=en] .hero-identity h1{max-width:12ch}
 .campus-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8%;align-items:start;margin-top:42px}.campus-grid h3{font-size:25px}.campus-grid address{font-size:18px;line-height:1.65;font-style:normal;margin:22px 0}.campus-grid iframe{display:block;width:100%;aspect-ratio:16/10;border:1px solid var(--border);background:var(--surface)}
 @media(max-width:900px){.support-contact-grid,.campus-grid{gap:5%}}
 @media(max-width:650px){.support-path ol,.support-contact-grid,.campus-grid{grid-template-columns:1fr}.support-path ol{gap:24px;margin-top:32px}.support-path li:before{margin-bottom:12px}.support-contact-grid,.campus-grid{gap:26px;margin-top:28px}.support-fields{grid-template-columns:1fr}.support-fields .support-message{grid-column:auto}.support-contact [data-support-draft]{display:block;margin-left:0}.campus-grid iframe{aspect-ratio:4/3}}
+
+.footer-brand-bottom{background:#000;color:#fff;padding-top:42px}
+.footer-logo{display:inline-block;line-height:0}.footer-logo img{display:block;width:clamp(150px,22vw,320px);height:auto;filter:none}
+.footer-brand-bottom .footer-bottom{margin-top:38px;border-top-color:#ffffff36;color:#d3d3d3}
+.footer-brand-bottom .footer-bottom a{color:#fff}
 .test-actions{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:24px}
 .test-action{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:8px 0;border-bottom:1px solid currentColor;text-decoration:none;font-weight:550}
 .test-action::after{content:'';width:8px;height:8px;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(45deg);flex:none}

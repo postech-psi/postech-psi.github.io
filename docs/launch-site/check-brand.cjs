@@ -8,6 +8,27 @@ async function checkBrand(browser){
     const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce',colorScheme:'light'});
     const page=await context.newPage();
     for(const [name,run] of [
+      ['authentic PSI logo closes every canonical footer',async()=>{
+        for(const route of ['index','projects','research','records','news','about','support']){
+          await page.goto(`${base}/${locale}${route}.html`);
+          const logo=page.locator('footer .footer-logo img');
+          assert.equal(await logo.count(),1,`${route} has one footer logo`);
+          assert.ok((await logo.getAttribute('src')).endsWith('assets/psi-logo.png'));
+          assert.equal(await logo.getAttribute('alt'),'PSI');
+          assert.equal(await logo.evaluate(img=>getComputedStyle(img).filter),'none');
+          const ratio=await logo.evaluate(img=>img.getBoundingClientRect().width/img.getBoundingClientRect().height);
+          assert.ok(Math.abs(ratio-1280/317)<.05,`${route} preserves logo proportions`);
+          assert.ok(await page.locator('.footer-brand-bottom').evaluate(el=>el.compareDocumentPosition(document.querySelector('.footer-top'))&Node.DOCUMENT_POSITION_PRECEDING));
+        }
+        await page.goto(`${base}/${locale}index.html`);
+        for(const width of [320,390,768,1440])for(const theme of ['light','dark']){
+          await page.setViewportSize({width,height:900});
+          await setTheme(page,theme);
+          const logo=page.locator('footer .footer-logo img');
+          assert.ok(await logo.evaluate(img=>img.complete&&img.naturalWidth>0));
+          assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${width}px ${theme} footer fits`);
+        }
+      }],
       ['shared variable portal face without synthetic weight',async()=>{
         await page.goto(`${base}/${locale}index.html`);await page.evaluate(()=>document.fonts.ready);
         const heading=await page.locator('.hero-identity h1').evaluate(el=>({family:getComputedStyle(el).fontFamily,weight:getComputedStyle(el).fontWeight}));
