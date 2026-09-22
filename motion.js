@@ -25,6 +25,7 @@
     if(!peopleFiles.has(file)||img.closest('[data-photo-reel],dialog'))return;
     const media=img.closest('a')||img;
     const frame=document.createElement('div');frame.className='living-photo';frame.dataset.livingPhoto='';
+    if(media.hasAttribute('data-photo-motion')){media.removeAttribute('data-photo-motion');frame.dataset.photoMotion='';}
     media.before(frame);frame.append(media);
     const button=document.createElement('button');button.type='button';button.className='photo-motion-toggle';
     button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path data-photo-pause d="M8 5v14M16 5v14"/><path data-photo-play d="m8 5 11 7-11 7Z"/></svg>';
@@ -51,7 +52,7 @@
   if(portraits.length)new MutationObserver(syncPortraits).observe(document.body,{attributes:true,attributeFilter:['class']});
   syncPortraits();
   // One entrance per image or heading; content remains present without scripting.
-  const pictures=document.querySelectorAll('.reel-image,.program-picture,.story-list>article>a,[data-gallery-open],.study-visual,.living-photo');
+  const pictures=document.querySelectorAll('[data-photo-motion]');
   const reveal=new IntersectionObserver(entries=>{
     for(const entry of entries){
       if(!entry.isIntersecting)continue;
@@ -110,15 +111,4 @@
     requestAnimationFrame(()=>target.scrollIntoView({behavior:'instant',block:'start'}));
   };
   revealHash();addEventListener('hashchange',revealHash);addEventListener('pageshow',revealHash);
-  document.querySelectorAll('[data-program-switch]').forEach(root=>{
-    const controls=root.querySelector('[data-program-choices]');
-    const panels=[...root.querySelectorAll('[data-program]')];
-    controls.hidden=false;root.dataset.enhanced='true';
-    const select=(id,motion=true)=>{
-      for(const panel of panels){panel.hidden=panel.dataset.program!==id;if(!panel.hidden&&motion)animate(panel,[{opacity:.25,transform:'translateY(18px)'},{opacity:1,transform:'none'}]);}
-      controls.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.programChoice===id)));
-    };
-    controls.addEventListener('click',event=>{const button=event.target.closest('button');if(button)select(button.dataset.programChoice);});
-    select('pslv',false);
-  });
 })();

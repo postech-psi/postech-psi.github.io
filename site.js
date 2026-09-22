@@ -5,8 +5,7 @@
   // Preserve old public entry points with same-directory, language-safe routes.
   const pageName=location.pathname.split('/').pop();
   const legacyDestination=()=>{
-    if(pageName==='learning.html')return 'about.html#learning';
-    if(pageName==='projects.html'&&['#avionics','#tms'].includes(location.hash))return 'pslv.html'+location.search+location.hash;
+    if(pageName==='learning.html')return 'about.html#participation';
     if(pageName==='news.html'&&location.hash==='#tests')return 'records.html#tests';
     if(pageName==='research.html'&&(location.hash==='#research-archive'||[...document.querySelectorAll('[data-archive-compatibility] a')].some(a=>a.hash===location.hash)))return 'records.html'+location.hash;
   };
@@ -124,6 +123,16 @@
 
   const menu = document.querySelector('[data-menu-toggle]');
   const navigation = document.querySelector('#site-navigation');
+  const projectMenu = document.querySelector('[data-project-menu]');
+  const projectToggle = projectMenu?.querySelector('[data-project-menu-toggle]');
+  const projectSubmenu = projectMenu?.querySelector('[data-project-submenu]');
+  const setProjectMenu=(open,{restoreFocus=false}={})=>{
+    if(!projectToggle||!projectSubmenu)return;
+    projectToggle.setAttribute('aria-expanded',String(open));
+    projectSubmenu.hidden=!open;
+    if(open)window.psiMotion?.(projectSubmenu,[{opacity:0,transform:'translateY(-8px)'},{opacity:1,transform:'none'}]);
+    if(restoreFocus)projectToggle.focus();
+  };
   const main = document.querySelector('main');
   const footer = document.querySelector('footer');
   const menuBreakpoint = matchMedia('(max-width: 1100px)');
@@ -138,14 +147,56 @@
     if (main) main.inert = open;
     if (footer) footer.inert = open;
     if (restoreFocus) menu.focus();
+    if(!open)setProjectMenu(false);
   };
+  projectToggle?.addEventListener('click',()=>setProjectMenu(!menuBreakpoint.matches||projectToggle.getAttribute('aria-expanded')!=='true'));
+  projectMenu?.querySelector(':scope > a')?.addEventListener('focus',()=>setProjectMenu(true));
+  projectMenu?.addEventListener('focusout',event=>{if(!projectMenu.contains(event.relatedTarget))setProjectMenu(false);});
+  projectMenu?.addEventListener('pointerenter',()=>{if(!menuBreakpoint.matches)setProjectMenu(true);});
+  projectMenu?.addEventListener('pointerleave',()=>{if(!menuBreakpoint.matches&&!projectMenu.contains(document.activeElement))setProjectMenu(false);});
+  document.addEventListener('pointerdown',event=>{if(projectMenu&&!projectMenu.contains(event.target))setProjectMenu(false);});
   menu?.addEventListener('click', () => setMenu(menu.getAttribute('aria-expanded') !== 'true'));
   navigation?.addEventListener('click', event => { if (event.target.closest('a')) setMenu(false); });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && menu?.getAttribute('aria-expanded') === 'true') setMenu(false, true);
+    if(event.key!=='Escape')return;
+    if(projectToggle?.getAttribute('aria-expanded')==='true'){
+      event.preventDefault();setProjectMenu(false,{restoreFocus:true});return;
+    }
+    if(menu?.getAttribute('aria-expanded')==='true')setMenu(false,true);
   });
-  menuBreakpoint.addEventListener('change', () => setMenu(false));
-  window.addEventListener('pageshow', () => setMenu(false));
+  menuBreakpoint.addEventListener('change', () => {setMenu(false);setProjectMenu(false);});
+  window.addEventListener('pageshow', () => {setMenu(false);setProjectMenu(false);});
+
+  const projectTabs=[...document.querySelectorAll('[data-project-tab]')];
+  const projectPanels=[...document.querySelectorAll('[data-project-panel]')];
+  if(projectTabs.length===2&&projectPanels.length===2){
+    const projectForHash=()=>{
+      let target;
+      try{target=document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{}
+      return target?.closest('[data-project-panel]')?.dataset.projectPanel||'pslv';
+    };
+    const selectProject=(id,{updateHistory=false,focus=false}={})=>{
+      for(const tab of projectTabs){
+        const selected=tab.dataset.projectTab===id;
+        tab.setAttribute('aria-selected',String(selected));
+        tab.tabIndex=selected?0:-1;
+        if(selected&&focus)tab.focus();
+      }
+      for(const panel of projectPanels)panel.hidden=panel.dataset.projectPanel!==id;
+      if(updateHistory)history.pushState(null,'',`#project-${id}`);
+    };
+    for(const tab of projectTabs)tab.addEventListener('click',()=>selectProject(tab.dataset.projectTab,{updateHistory:true}));
+    const reconcileProject=()=>{
+      selectProject(projectForHash());
+      const target=location.hash?document.getElementById(location.hash.slice(1)):null;
+      if(target?.closest('[data-project-panel]'))requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+    };
+    window.addEventListener('hashchange',reconcileProject);
+    window.addEventListener('popstate',reconcileProject);
+    window.addEventListener('pageshow',reconcileProject);
+    reconcileProject();
+    tabKeyboard(projectTabs);
+  }
 
   function tabKeyboard(buttons, currentOrientation) {
     buttons.forEach((button, index) => button.addEventListener('keydown', event => {
@@ -475,5 +526,26 @@
       event.preventDefault(); topic.value = 'all'; type.value = 'all'; search.value = ''; filter();
     });
     filter();
+  }
+  const supportForm=document.querySelector('[data-support-form]');
+  if(supportForm){
+    const draft=document.querySelector('[data-support-draft]');
+    supportForm.addEventListener('submit',event=>{
+      event.preventDefault();
+      if(!supportForm.reportValidity())return;
+      const fields=new FormData(supportForm);
+      const category=fields.get('type')==='general'?'general':'support';
+      const subject=category==='general'?t('PSI general enquiry','PSI 일반 문의'):t('PSI support enquiry','PSI 후원 문의');
+      const body=[
+        `${t('Name','이름')}: ${String(fields.get('name')||'').trim()}`,
+        `${t('Affiliation','소속')}: ${String(fields.get('affiliation')||'').trim()}`,
+        `${t('Reply email','답장 이메일')}: ${String(fields.get('email')||'').trim()}`,
+        `${t('Enquiry type','문의 유형')}: ${category}`,
+        '',String(fields.get('message')||'').trim()
+      ].join('\n');
+      draft.href=`${supportForm.getAttribute('action')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      draft.hidden=false;
+      draft.focus();
+    });
   }
 })();

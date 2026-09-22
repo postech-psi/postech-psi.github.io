@@ -18,6 +18,9 @@ async function checkSimpleNavigation(browser){
   const projectToggle=page.locator('[data-project-menu-toggle]');
   const projectSubmenu=page.locator('[data-project-submenu]');
   assert.deepEqual(await projectSubmenu.locator('a').evaluateAll(links=>links.map(a=>a.getAttribute('href'))),['projects.html#project-pslv','projects.html#project-aircraft']);
+  await projectToggle.click();
+  assert.ok(await projectSubmenu.isVisible(),'Desktop mouse click opens the submenu even after pointer hover');
+  await page.keyboard.press('Escape');
   await projectToggle.focus();
   await page.keyboard.press('Enter');
   assert.ok(await projectSubmenu.isVisible());
@@ -25,6 +28,7 @@ async function checkSimpleNavigation(browser){
   assert.equal(await projectSubmenu.isVisible(),false);
   assert.equal(await projectToggle.evaluate(el=>el===document.activeElement),true);
   await projectToggle.evaluate(el=>el.blur());
+  await page.mouse.move(0,0);
   await page.locator('[data-project-menu]').hover();
   assert.ok(await projectSubmenu.isVisible(),'Desktop hover exposes the submenu');
   await page.mouse.move(0,0);

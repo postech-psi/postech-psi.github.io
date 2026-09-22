@@ -149,7 +149,7 @@
     if (restoreFocus) menu.focus();
     if(!open)setProjectMenu(false);
   };
-  projectToggle?.addEventListener('click',()=>setProjectMenu(projectToggle.getAttribute('aria-expanded')!=='true'));
+  projectToggle?.addEventListener('click',()=>setProjectMenu(!menuBreakpoint.matches||projectToggle.getAttribute('aria-expanded')!=='true'));
   projectMenu?.querySelector(':scope > a')?.addEventListener('focus',()=>setProjectMenu(true));
   projectMenu?.addEventListener('focusout',event=>{if(!projectMenu.contains(event.relatedTarget))setProjectMenu(false);});
   projectMenu?.addEventListener('pointerenter',()=>{if(!menuBreakpoint.matches)setProjectMenu(true);});
