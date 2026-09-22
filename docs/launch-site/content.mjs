@@ -2,6 +2,7 @@ import {resultCatalog} from './test-results-view.mjs';
 export const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms'];
 export const text = (en,ko) => ({en,ko});
 export const sources = {
+  presidentEmail:'uikangee@postech.ac.kr',
   github:'https://github.com/postech-psi', legacy:'https://sites.google.com/view/mechanicslab/PSI',
   instagram:'https://www.instagram.com/postech_psi/', avionics:'https://github.com/postech-psi/Avionics/tree/7cfb5be044e539c2e3c6d79a6538416a2741cd67',
   flightSoftware:'https://github.com/postech-psi/Avionics/blob/7cfb5be044e539c2e3c6d79a6538416a2741cd67/flight-computer/README.md',

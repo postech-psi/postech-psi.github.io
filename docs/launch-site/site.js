@@ -5,7 +5,7 @@
   // Preserve old public entry points with same-directory, language-safe routes.
   const pageName=location.pathname.split('/').pop();
   const legacyDestination=()=>{
-    if(pageName==='learning.html')return 'about.html#learning';
+    if(pageName==='learning.html')return 'about.html#participation';
     if(pageName==='news.html'&&location.hash==='#tests')return 'records.html#tests';
     if(pageName==='research.html'&&(location.hash==='#research-archive'||[...document.querySelectorAll('[data-archive-compatibility] a')].some(a=>a.hash===location.hash)))return 'records.html'+location.hash;
   };

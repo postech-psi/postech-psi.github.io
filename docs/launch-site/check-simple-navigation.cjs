@@ -67,7 +67,7 @@ async function checkSimpleNavigation(browser){
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#main').evaluate(el=>el.inert),false);
   await page.setViewportSize({width:1440,height:1000});
-  for(const [from,to] of [['tms.html?test=2026-04-08-combustion#test-results','projects.html?test=2026-04-08-combustion#test-results'],['avionics.html#architecture','projects.html#architecture'],['gallery.html#launch-dec-2025','news.html#launch-dec-2025'],['join.html','about.html#participation'],['learning.html','about.html#learning']]){
+  for(const [from,to] of [['tms.html?test=2026-04-08-combustion#test-results','projects.html?test=2026-04-08-combustion#test-results'],['avionics.html#architecture','projects.html#architecture'],['gallery.html#launch-dec-2025','news.html#launch-dec-2025'],['join.html','about.html#participation'],['learning.html','about.html#participation']]){
    await page.goto(`${base}/${prefix}${from}`);await page.waitForURL(`${base}/${prefix}${to}`);
    if(from.startsWith('avionics'))assert.ok(await page.locator('#architecture').isVisible());
   }
@@ -81,7 +81,7 @@ async function checkSimpleNavigation(browser){
   assert.ok(await page.locator('[data-gallery-image]').evaluate(el=>el.getAnimations().length>0),'Gallery animates photo changes');
   await page.locator('[data-gallery-close]').click();
   await page.goto(`${base}/${prefix}about.html`);
-  assert.equal(await page.locator('#participation').count(),1);assert.equal(await page.locator('#learning').count(),1);
+  assert.equal(await page.locator('#participation').count(),1);assert.equal(await page.locator('#learning').count(),0);
   for(const route of ['index','projects','pslv','aircraft','research','records','news','about']){
    await page.goto(`${base}/${prefix}${route}.html`);
    assert.equal(await page.locator('a[href]').evaluateAll(as=>as.filter(a=>/^(avionics|tms|gallery|join|learning)\.html/.test(a.getAttribute('href'))).length),0,`${route} exposes only canonical destinations`);

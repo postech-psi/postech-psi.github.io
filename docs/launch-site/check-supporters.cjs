@@ -35,7 +35,7 @@ async function checkSupporters(browser) {
       const src=await img.getAttribute('src');
       assert.ok(fs.existsSync(path.resolve(__dirname,locale,src)));
     }
-    assert.match(await page.locator('.org-support').innerText(),locale ? /재정[\s\S]*예산[\s\S]*지출/ : /Finance[\s\S]*budget[\s\S]*expenses/);
+    assert.match(await page.locator('.organisation-table').innerText(),locale ? /재정[\s\S]*예산[\s\S]*지출/ : /Finance[\s\S]*budget[\s\S]*expenses/);
     for(const width of [390,768,1440]) for(const theme of ['light','dark']) {
       await page.setViewportSize({width,height:1000});
       await setTheme(page,theme);
