@@ -60,7 +60,7 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   await page.goto(base+'pslv.html?test=2026-04-08-combustion#test-results');
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
   assert.equal(await page.locator('[data-results-select]').inputValue(),'2026-04-08-combustion','Dated record link selects its original trial');
-  assert.equal(await page.locator('[data-language-link]').getAttribute('href'),'ko/pslv.html?test=2026-04-08-combustion#test-results');
+  assert.equal(await page.locator('[data-language-link]').getAttribute('href'),'ko/projects.html?test=2026-04-08-combustion#test-results');
   await page.screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-desktop.png'),fullPage:true});
   await page.goto(base+'ko/pslv.html#tms');await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});assert.equal(await page.locator('#dt-tab-thrust').textContent(),'추력');
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-mobile-ko.png'),fullPage:true});
@@ -79,7 +79,10 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));assert.equal(await page.locator('#dt-canvas-thrust').count(),0,'page teardown disposes charts');
   const broken=await browser.newPage();await broken.route('**/controller.mjs*',r=>r.abort());await broken.goto(base+'pslv.html#tms');await broken.locator('[data-results-retry]').waitFor();assert.equal(await broken.locator('.site-header').count(),1);assert.equal(await broken.locator('[data-results-fallback] tbody tr').count(),4);await broken.unroute('**/controller.mjs*');await broken.locator('[data-results-retry]').click();await broken.locator('[data-results-status="ready"]').waitFor({state:'attached',timeout:5000});await broken.close();
   const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'pslv.html');await nojs.locator('[data-system="tms"] > summary').click();assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
-  const requests=[];page.on('request',r=>requests.push(r.url()));await page.goto(base+'aircraft.html');assert.equal(requests.some(u=>u.includes('/results/')),false);
+  await page.goto(base+'aircraft.html');
+  assert.ok(page.url().endsWith('projects.html#project-aircraft'));
+  assert.ok(await page.locator('[data-project-panel="aircraft"]').isVisible());
+  assert.equal(await page.locator('[data-project-panel="pslv"]').isVisible(),false);
   assert.deepEqual(browserErrors.filter(error=>!isExpectedCatalogAbort(error)),[],'unexpected browser errors');
   console.log('PASS original results integration, controls, all trials, theme, KO/subpath, motion, failure/retry and no-JS');
  } finally {await browser.close();server.close();}

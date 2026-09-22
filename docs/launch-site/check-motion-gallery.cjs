@@ -162,7 +162,7 @@ async function checkMotionGallery(browser, only = 'all') {
           const p=await plain.newPage();await p.goto(`${base}/${locale}news.html`);
           assert.equal(await p.locator('[data-gallery-open]').count(),13);
           assert.ok((await p.locator('[data-gallery-open]').first().getAttribute('href')).endsWith('.webp'));
-          await p.goto(`${base}/${locale}pslv.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
+          await p.goto(`${base}/${locale}projects.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
           await p.evaluate(()=>document.fonts.ready);
           if(!await p.locator('[data-system="avionics"]').evaluate(el=>el.open))await p.locator('[data-system="avionics"] > summary').click();await p.locator('.replay-summary summary').click();assert.equal(await p.locator('.replay-summary tbody tr:visible').count(),3);
         } finally {await plain.close();}

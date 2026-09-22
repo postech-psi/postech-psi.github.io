@@ -15,7 +15,7 @@ async function checkEngineering(browser){
    ['Avionics chapters and source boundaries',async()=>{
     await page.goto(`${base}/${locale}pslv.html#avionics`);assert.ok(await page.locator('[data-system]').count());
     assert.equal(await page.locator('.site-nav [aria-current=page]').getAttribute('href'),'projects.html');
-    assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../pslv.html#avionics':'ko/pslv.html#avionics');
+    assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../projects.html#avionics':'ko/projects.html#avionics');
     for(const id of ['architecture','estimation','ground-station','flight-record'])assert.equal(await page.locator(`#${id}`).count(),1);
     const text=await page.locator('#main').innerText();
     if(!locale)assert.ok(text.includes('A separate transmission thread forwards framed, checksum-checked inter-core messages containing measurements and status.'),'Transmission thread forwards queued frames; it does not assemble them');
@@ -31,7 +31,7 @@ async function checkEngineering(browser){
    ['Compact combustion tests and original key results',async()=>{
     await page.goto(`${base}/${locale}pslv.html#tms`);
     assert.equal(await page.locator('.site-nav [aria-current=page]').getAttribute('href'),'projects.html');
-    assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../pslv.html#tms':'ko/pslv.html#tms');
+    assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../projects.html#tms':'ko/projects.html#tms');
     for(const id of ['instrument','processing','analysis','test-results'])assert.equal(await page.locator(`#${id}`).count(),1);
     await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
     const tms=page.locator('[data-system="tms"]');
@@ -52,11 +52,11 @@ async function checkEngineering(browser){
     assert.equal(await page.locator('[data-telemetry]').count(),1,'PSLV owns the sole replay');
     assert.equal(await page.locator('a[href="avionics.html"]').count(),0);
     await page.goto(`${base}/${locale}index.html`);
-    assert.ok(await page.locator('a[href="pslv.html"]').count(),'Home leads to the PSLV project');
+    assert.ok(await page.locator('a[href="projects.html#project-pslv"]').count(),'Home leads directly to the PSLV project');
     assert.equal(await page.locator('[data-program]').count(),2);
     await page.goto(`${base}/${locale}records.html`);
     const {resultCatalog}=await import('./test-results-view.mjs');
-    for(const test of resultCatalog.tests)assert.ok(await page.locator(`a[href="pslv.html?test=${test.id}#test-results"]`).count());
+    for(const test of resultCatalog.tests)assert.ok(await page.locator(`a[href="projects.html?test=${test.id}#test-results"]`).count());
    }],
    ['anchors clear the sticky header',async()=>{
     await page.setViewportSize({width:390,height:844});

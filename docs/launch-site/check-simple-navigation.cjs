@@ -5,6 +5,15 @@ async function checkSimpleNavigation(browser){
  const page=await browser.newPage({viewport:{width:1440,height:1000}});
  try{
  for(const prefix of ['', 'ko/']){
+  await page.goto(`${base}/${prefix}projects.html#project-aircraft`);
+  assert.equal(await page.locator('[data-project-tab]').count(),2,'Projects exposes two direct project tabs');
+  assert.equal(await page.locator('[data-project-tab="aircraft"]').getAttribute('aria-selected'),'true');
+  assert.ok(await page.locator('[data-project-panel="aircraft"]').isVisible());
+  assert.equal(await page.locator('[data-project-panel="pslv"]').isVisible(),false);
+  await page.locator('[data-project-tab="pslv"]').click();
+  assert.equal(new URL(page.url()).hash,'#project-pslv');
+  await page.goBack();
+  assert.equal(await page.locator('[data-project-tab="aircraft"]').getAttribute('aria-selected'),'true');
   await page.goto(`${base}/${prefix}pslv.html`);
   assert.equal(await page.locator('.site-nav a').count(),5,'Five destinations keep the navigation focused');
   assert.equal(await page.locator('h1').count(),1);
@@ -19,11 +28,12 @@ async function checkSimpleNavigation(browser){
   await page.locator('#dt-canvas-thrust canvas').waitFor({state:'visible'});
   assert.ok((await page.locator('#dt-canvas-thrust canvas').boundingBox()).width>100);
   assert.ok(await page.locator('#dt-canvas-thrust canvas').isVisible());
-  await page.waitForTimeout(500);
+  await page.waitForFunction(()=>document.querySelectorAll('[data-system][open]').length===1);
   assert.equal(await page.locator('[data-system][open]').count(),1,'One focal system stays open');
   const avionics=page.locator('[data-system="avionics"] > summary');
   await avionics.focus();await page.keyboard.press('Enter');await page.keyboard.press('Space');await page.keyboard.press('Enter');
-  await page.setViewportSize({width:390,height:844});await page.waitForTimeout(450);
+  await page.setViewportSize({width:390,height:844});
+  await page.waitForFunction(()=>document.querySelectorAll('[data-system][open]').length===1&&document.querySelector('[data-system="avionics"]').open);
   assert.equal(await page.locator('[data-system][open]').getAttribute('data-system'),'avionics','Interrupted keyboard toggles settle on the last requested system');
   assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.style.height),'','Resize does not leave a fixed clipping height');
   await page.locator('[data-theme-toggle]').click();
@@ -33,7 +43,7 @@ async function checkSimpleNavigation(browser){
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#main').evaluate(el=>el.inert),false);
   await page.setViewportSize({width:1440,height:1000});
-  for(const [from,to] of [['tms.html?test=2026-04-08-combustion#test-results','pslv.html?test=2026-04-08-combustion#test-results'],['avionics.html#architecture','pslv.html#architecture'],['gallery.html#launch-dec-2025','news.html#launch-dec-2025'],['join.html','about.html#participation'],['learning.html','about.html#learning']]){
+  for(const [from,to] of [['tms.html?test=2026-04-08-combustion#test-results','projects.html?test=2026-04-08-combustion#test-results'],['avionics.html#architecture','projects.html#architecture'],['gallery.html#launch-dec-2025','news.html#launch-dec-2025'],['join.html','about.html#participation'],['learning.html','about.html#learning']]){
    await page.goto(`${base}/${prefix}${from}`);await page.waitForURL(`${base}/${prefix}${to}`);
    if(from.startsWith('avionics'))assert.ok(await page.locator('#architecture').isVisible());
   }
@@ -53,10 +63,10 @@ async function checkSimpleNavigation(browser){
    assert.equal(await page.locator('a[href]').evaluateAll(as=>as.filter(a=>/^(avionics|tms|gallery|join|learning)\.html/.test(a.getAttribute('href'))).length),0,`${route} exposes only canonical destinations`);
   }
   await page.goto(`${base}/${prefix}projects.html`);
-  await page.locator('[data-program-choice="aircraft"]').click();
-  assert.ok(await page.locator('[data-program="aircraft"]').isVisible());
-  assert.equal(await page.locator('[data-program="pslv"]').isVisible(),false);
-  assert.ok(await page.locator('[data-program="aircraft"]').evaluate(el=>el.getAnimations().length>0),'Program photo/copy move together');
+  assert.equal(await page.locator('main h1').count(),1);
+  await page.locator('[data-project-tab="aircraft"]').click();
+  assert.ok(await page.locator('[data-project-panel="aircraft"]').isVisible());
+  assert.equal(await page.locator('[data-project-panel="pslv"]').isVisible(),false);
  }
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'/pslv.html');
  await page.locator('[data-system="avionics"] > summary').click();
@@ -64,7 +74,10 @@ async function checkSimpleNavigation(browser){
  assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.getAnimations().length),0);
  await page.locator('[data-theme-toggle]').click();assert.equal(await page.locator('[data-theme-toggle]').evaluate(el=>el.getAnimations().length),0);
  const nojs=await browser.newContext({javaScriptEnabled:false});const fallback=await nojs.newPage();
- await fallback.goto(base+'/pslv.html');await fallback.locator('[data-system="tms"] > summary').click();
+ await fallback.goto(base+'/projects.html');
+ assert.equal(await fallback.locator('[data-project-panel]:visible').count(),2);
+ assert.equal(await fallback.locator('main h1').count(),1);
+ await fallback.locator('[data-system="tms"] > summary').click();
  assert.ok(await fallback.locator('[data-results-fallback]').isVisible());
  await nojs.close();
  console.log('PASS simple navigation: bilingual canonical routes, native engineering disclosures, original charts, compatibility deep links, News photos, About participation, project switch and reduced motion');

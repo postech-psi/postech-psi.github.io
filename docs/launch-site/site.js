@@ -6,7 +6,6 @@
   const pageName=location.pathname.split('/').pop();
   const legacyDestination=()=>{
     if(pageName==='learning.html')return 'about.html#learning';
-    if(pageName==='projects.html'&&['#avionics','#tms'].includes(location.hash))return 'pslv.html'+location.search+location.hash;
     if(pageName==='news.html'&&location.hash==='#tests')return 'records.html#tests';
     if(pageName==='research.html'&&(location.hash==='#research-archive'||[...document.querySelectorAll('[data-archive-compatibility] a')].some(a=>a.hash===location.hash)))return 'records.html'+location.hash;
   };
@@ -146,6 +145,37 @@
   });
   menuBreakpoint.addEventListener('change', () => setMenu(false));
   window.addEventListener('pageshow', () => setMenu(false));
+
+  const projectTabs=[...document.querySelectorAll('[data-project-tab]')];
+  const projectPanels=[...document.querySelectorAll('[data-project-panel]')];
+  if(projectTabs.length===2&&projectPanels.length===2){
+    const projectForHash=()=>{
+      let target;
+      try{target=document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{}
+      return target?.closest('[data-project-panel]')?.dataset.projectPanel||'pslv';
+    };
+    const selectProject=(id,{updateHistory=false,focus=false}={})=>{
+      for(const tab of projectTabs){
+        const selected=tab.dataset.projectTab===id;
+        tab.setAttribute('aria-selected',String(selected));
+        tab.tabIndex=selected?0:-1;
+        if(selected&&focus)tab.focus();
+      }
+      for(const panel of projectPanels)panel.hidden=panel.dataset.projectPanel!==id;
+      if(updateHistory)history.pushState(null,'',`#project-${id}`);
+    };
+    for(const tab of projectTabs)tab.addEventListener('click',()=>selectProject(tab.dataset.projectTab,{updateHistory:true}));
+    const reconcileProject=()=>{
+      selectProject(projectForHash());
+      const target=location.hash?document.getElementById(location.hash.slice(1)):null;
+      if(target?.closest('[data-project-panel]'))requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+    };
+    window.addEventListener('hashchange',reconcileProject);
+    window.addEventListener('popstate',reconcileProject);
+    window.addEventListener('pageshow',reconcileProject);
+    reconcileProject();
+    tabKeyboard(projectTabs);
+  }
 
   function tabKeyboard(buttons, currentOrientation) {
     buttons.forEach((button, index) => button.addEventListener('keydown', event => {

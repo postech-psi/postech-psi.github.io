@@ -13,14 +13,15 @@ async function checkHomepage(browser) {
     const context = await browser.newContext({viewport:{width:1440,height:1000}});
     const page = await context.newPage();
     await page.goto(`${base}/${locale}index.html`);
-    await check(`${locale || 'en/'} two program previews link to distinct real program pages`,async()=>{
+    await check(`${locale || 'en/'} two program previews link to direct project panels`,async()=>{
       assert.equal(await page.locator('[data-program]').count(),2);
       for(const id of ['pslv','aircraft']){
         await page.locator(`[data-program-choice="${id}"]`).click();
         const preview=page.locator(`[data-program="${id}"]`);
         assert.ok(await preview.locator('h2').isVisible());
         await preview.locator('a').first().click();
-        assert.ok(page.url().endsWith('/'+id+'.html'));
+        assert.ok(page.url().endsWith(`/projects.html#project-${id}`));
+        assert.ok(await page.locator(`[data-project-panel="${id}"]`).isVisible());
         assert.equal(await page.locator('h1').count(),1);
         await page.goBack();
       }
