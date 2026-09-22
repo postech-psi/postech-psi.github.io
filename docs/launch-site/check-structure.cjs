@@ -21,12 +21,13 @@ const {chromium}=require('playwright');
   await page.goto(base+prefix+'index.html');
   assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'연구':'Research','Research invitation uses the concise section title');
   assert.equal(await page.locator('[data-program]').count(),2);
-  assert.equal(await page.locator('.testing-feature a.test-action').first().getAttribute('href'),'pslv.html#test-results');
+  assert.equal(await page.locator('.testing-feature a.test-action').first().getAttribute('href'),'projects.html#test-results');
   await page.goto(base+prefix+'projects.html');
-  assert.deepEqual(await page.locator('.site-nav a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html']);
-  assert.equal(await page.locator('[data-program]').count(),2);
-  await page.locator('[data-program-choice="aircraft"]').click();await page.locator('[data-program="aircraft"] a').first().click();
-  assert.match(page.url(),/aircraft.html$/);
+  assert.deepEqual(await page.locator('.site-nav > a, .nav-projects > a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html']);
+  assert.equal(await page.locator('[data-project-tab]').count(),2);
+  await page.locator('[data-project-tab="aircraft"]').click();
+  assert.match(page.url(),/projects\.html#project-aircraft$/);
+  assert.ok(await page.locator('[data-project-panel="aircraft"]').isVisible());
   assert.equal(await page.locator('a[href="projects.html"]').count()>0,true);
   await page.goto(base+prefix+'research.html');
   assert.equal(await page.locator('[data-current-research]').count(),5);
@@ -40,8 +41,8 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('[data-research-record]:visible').count(),6);
   await page.locator('[data-filter-reset]').click();
   for(const r of research){await page.goto(base+prefix+'research.html#'+r.id);await page.waitForURL(base+prefix+'records.html#'+r.id);}
-  for(const [from,to] of [['learning.html','about.html#learning'],['projects.html#avionics','pslv.html#avionics'],['projects.html#tms','pslv.html#tms'],['news.html#tests','records.html#tests'],['research.html#research-archive','records.html#research-archive'],['research.html#ksas-2025-fusion','records.html#ksas-2025-fusion']]){
-   await page.goto(base+prefix+from); await page.waitForURL(base+prefix+(from==='learning.html'?'about.html#learning':to));
+  for(const [from,to] of [['learning.html','about.html#learning'],['pslv.html#avionics','projects.html#avionics'],['tms.html#tms','projects.html#tms'],['news.html#tests','records.html#tests'],['research.html#research-archive','records.html#research-archive'],['research.html#ksas-2025-fusion','records.html#ksas-2025-fusion']]){
+   await page.goto(base+prefix+from); await page.waitForURL(base+prefix+to);
   }
   for(const id of [resultCatalog.tests.at(-1).id,'unknown-test']){
    await page.goto(base+prefix+'tms.html?test='+id+'#test-results');
