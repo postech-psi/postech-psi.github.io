@@ -26,6 +26,34 @@ async function checkHomepage(browser) {
         await page.goBack();
       }
     });
+    await check(`${locale || 'en/'} film tabs keep a complete, stable frame at desktop and mobile widths`, async () => {
+      for (const width of [1440,390]) {
+        await page.setViewportSize({width,height:1000});
+        await page.goto(`${base}/${locale}index.html`);
+        const geometry = () => page.locator('[data-media-stage]').evaluate(stage => {
+          const screen = stage.querySelector('.media-screen').getBoundingClientRect();
+          const video = stage.querySelector('video').getBoundingClientRect();
+          const bar = stage.querySelector('.media-bar').getBoundingClientRect();
+          return {
+            fit:getComputedStyle(stage.querySelector('video')).objectFit,
+            screenBottom:screen.bottom,
+            barTop:bar.top,
+            aspect:video.width / video.height,
+            videoInsideScreen:video.left >= screen.left - 1 && video.right <= screen.right + 1
+          };
+        });
+        const before = await geometry();
+        assert.equal(before.fit,'contain',`${width}px launch-pad film must show its entire frame`);
+        assert.ok(Math.abs(before.aspect - 16 / 9) < .02,`${width}px film frame should be 16:9`);
+        assert.ok(before.videoInsideScreen,`${width}px video must fit inside its stage`);
+        await page.locator('[data-media="onboard"]').click();
+        const after = await geometry();
+        assert.equal(after.fit,'contain',`${width}px onboard film must show its entire frame`);
+        assert.ok(Math.abs(after.aspect - 16 / 9) < .02,`${width}px onboard frame should be 16:9`);
+        assert.ok(Math.abs(after.screenBottom - before.screenBottom) <= 1,`${width}px switching films must not move the stage bottom`);
+        assert.ok(Math.abs(after.barTop - before.barTop) <= 1,`${width}px switching films must not move the tabs`);
+      }
+    });
     await check(`${locale || 'en/'} hero exposes one playback interface and preserves keyboard focus`, async () => {
       await page.emulateMedia({reducedMotion:'reduce'});
       await page.setViewportSize({width:1440,height:1000});

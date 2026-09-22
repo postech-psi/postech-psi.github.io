@@ -313,6 +313,10 @@ html[lang=en] .hero-identity h1{max-width:12ch}
 @media(prefers-reduced-motion:reduce){.home-rocket .rocket-photo{transform:none;will-change:auto}}
 @media(forced-colors:active){.theme-toggle:focus-visible{outline:3px solid Highlight}}
 .support-section{display:block}.support-section>h2{margin-bottom:32px}.supporter-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;list-style:none;padding:24px;margin:0 0 40px;background:#000;color:#fff}.supporter-list li{min-width:0}.supporter-list a{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;font-size:16px;line-height:1.4;color:#fff;text-decoration:none}.supporter-list a:focus-visible{outline:2px solid #fff;outline-offset:6px}.supporter-art{display:flex;align-items:center;justify-content:center;width:100%;height:120px;padding:16px}.supporter-art img{display:block;width:100%;max-width:210px;height:auto;filter:none}.supporter-art-ansys img{max-width:170px}.supporter-list small{font-size:14px}.support-history{max-width:76ch}.support-history h3{margin-top:26px}.support-history .text-link{margin-top:16px}@media(max-width:1199px){.supporter-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:599px){.supporter-list{grid-template-columns:1fr;gap:24px}.supporter-art{height:90px}.supporter-art-ansys img{max-width:155px}.supporter-list a{gap:9px}}
+
+/* Keep both film views complete and use one frame size while switching scenes. */
+.media-screen video,.hero-media .media-screen video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;background:#000}
+@media(max-width:650px){.hero-media .media-screen video{height:auto;aspect-ratio:16/9;object-fit:contain}.film-controls{top:calc(56.25vw - 60px)}}
 .test-actions{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:24px}
 .test-action{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:8px 0;border-bottom:1px solid currentColor;text-decoration:none;font-weight:550}
 .test-action::after{content:'';width:8px;height:8px;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(45deg);flex:none}
