@@ -97,5 +97,16 @@
     "metadata": "none",
     "date": "2025-12-05",
     "source_sha256": "4dbb2956265e79fcf4190eccc2c9ab824c2a57ea1756e10b945724b35ff31b64"
+  },
+  {
+    "file": "award-thumb.webp",
+    "dimensions": [
+      960,
+      816
+    ],
+    "bytes": 67426,
+    "metadata": "none",
+    "date": "2025-12-02",
+    "source_sha256": "0596a788f78648c58ce125ae16042eb0d16a9bc1097519ad96b231cda05a6e8c"
   }
 ]

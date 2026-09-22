@@ -27,6 +27,7 @@ async function checkCurrentContent(browser) {
     try {
       await check(`${locale || 'en/'} five current studies remain distinct from historical records`, async () => {
         await page.goto(`${base}/${locale}research.html`);
+        assert.equal(await page.locator('.study-navigation').count(),0,'Research should open directly on current studies');
         assert.equal(await page.locator('[data-current-research]').count(),5,'Five current research records must exist');
         const current = page.locator('#main');
         const text = await current.textContent();
@@ -42,6 +43,8 @@ async function checkCurrentContent(browser) {
         assert.ok(await details.locator('[data-research-next]').isVisible());
         assert.equal(await page.locator('[data-research-item]').count(),0,'History is absent from current research');
         await page.goto(`${base}/${locale}records.html`);
+        assert.equal(await page.locator('.study-navigation').count(),0,'Records does not need a second navigation strip');
+        assert.equal(await page.locator('[data-filter-type]').count(),1,'Archive filters remain available');
         assert.equal(await page.locator('[data-research-item]:visible').count(),15,'Historical archive remains complete in Records');
         await page.locator('[data-filter-type]').selectOption('award');
         assert.equal(await page.locator('[data-research-item]:visible').count(),6,'Historical award filter still works');
@@ -49,6 +52,10 @@ async function checkCurrentContent(browser) {
         await page.locator('[data-filter-reset]').click();
         assert.equal(await page.locator('[data-research-item]:visible').count(),15);
         assert.equal(await current.locator('a[href*="sharepoint"],a[href*="onedrive"]').count(),0,'Private manuscript storage must not be linked');
+        await page.goto(`${base}/${locale}news.html`);
+        assert.equal(await page.locator('.album-navigation').count(),0,'News does not need a jump-link strip');
+        assert.equal(await page.locator('#award-dec-2025 [data-gallery-open]').count(),1,'The public award photograph belongs in News');
+        assert.equal(await page.locator('[data-gallery-open] .media-play').count(),0,'Photo links are not video controls');
       });
       await check(`${locale || 'en/'} first study reaches the initial research viewport`, async () => {
         await page.setViewportSize({width:1000,height:792});
@@ -90,7 +97,8 @@ async function checkCurrentContent(browser) {
         await plain.goto(`${base}/${locale}research.html`);
         assert.equal(await plain.locator('[data-current-research]').count(),5);
         const details = plain.locator('[data-current-research] details').last();
-        await details.locator('summary').click();
+        await details.locator('summary').focus();
+        await plain.keyboard.press('Enter');
         assert.ok(await details.locator('[data-research-method]').isVisible());
         assert.ok(await details.locator('[data-research-next]').isVisible());
       });

@@ -60,7 +60,7 @@ async function checkEngineering(browser){
    }],
    ['anchors clear the sticky header',async()=>{
     await page.setViewportSize({width:390,height:844});
-    for(const [route,selector]of [['pslv.html#avionics','.case-nav a[href="#estimation"]'],['news.html','.album-navigation a']]){
+    for(const [route,selector]of [['pslv.html#avionics','.case-nav a[href="#estimation"]']]){
       await page.goto(`${base}/${locale}${route.includes('.html')?route:'pslv.html#'+route}`);
       const anchor=page.locator(selector).first(),href=await anchor.getAttribute('href');
       await anchor.click();
@@ -68,6 +68,10 @@ async function checkEngineering(browser){
       const headerHeight=(await page.locator('.site-header').boundingBox()).height;
       assert.ok(box.y>=headerHeight&&box.y<=headerHeight+150,'Anchor target stays below the persistent navigation');
     }
+    await page.goto(`${base}/${locale}news.html#award-dec-2025`);
+    const awardBox=await page.locator('#award-dec-2025').boundingBox();
+    const newsHeaderHeight=(await page.locator('.site-header').boundingBox()).height;
+    assert.ok(awardBox.y>=newsHeaderHeight&&awardBox.y<=newsHeaderHeight+150,'Direct News event links clear the sticky header');
     await page.goto(`${base}/${locale}research.html`);
     const article=page.locator('[data-current-research]').last();
     await article.evaluate(el=>el.scrollIntoView());

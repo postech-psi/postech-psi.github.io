@@ -17,6 +17,7 @@ export const events=[
     photo('launch-day-team.webp','The team together by the sea on launch day.','발사 당일 바닷가에서 함께한 팀.')
   ]},
   {id:'rocket-dec-2025',date:'2025-12-06',dateLabel:text('6 December 2025','2025년 12월 6일'),label:text('Together with the rocket','로켓과 함께'),description:text('Members holding the rocket and its parachute.','로켓과 낙하산을 함께 든 부원들.'),photos:[photo('rocket-team-indoor.webp','Members with the rocket and its parachute.','로켓과 낙하산을 함께 든 부원들.')]},
+  {id:'award-dec-2025',date:'2025-12-02',dateLabel:text('2 December 2025','2025년 12월 2일'),label:text('Undergraduate POSTECHIAN Award','학부 POSTECHIAN상 수상'),description:text('A commemorative group photograph from the university recognition recorded in PSI’s public history.','PSI 공개 연혁에 기록된 대학 수상을 기념한 단체 사진입니다.'),photos:[photo('award.webp','PSI members in a commemorative group photograph after the POSTECH award.','POSTECH 수상을 기념해 함께 촬영한 PSI 구성원들.')]},
   {id:'nura-aug-2025',date:'2025-08',dateLabel:text('August 2025','2025년 8월'),label:text('NURA: building and field preparation','NURA 제작과 현장 준비'),description:text('Hardware checks and field preparation. The activity archive dates these photographs to August 2025; exact capture dates are unverified.','기체 점검과 현장 준비의 기록입니다. 활동 아카이브에서 2025년 8월로 분류한 사진이며, 정확한 촬영일은 확인되지 않았습니다.'),photos:[
     photo('nura-field-2025.webp','The PSI team placing the vehicle on the launch rail and preparing at the field.','발사 레일에 기체를 세우고 현장에서 준비하는 PSI 팀.'),
     photo('nura-fins-2025.webp','Checking the assembled rear fins of the vehicle.','기체 후방 핀 조립부의 제작 상태를 확인하는 모습.'),

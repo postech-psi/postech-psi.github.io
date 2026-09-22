@@ -66,10 +66,29 @@ async function checkMotionGallery(browser, only = 'all') {
       ['gallery',async()=>{
         const response=await page.goto(`${base}/${locale}news.html`);
         assert.equal(response.status(),200,'Gallery route exists');
-        assert.equal(await page.locator('[data-gallery-event]').count(),5);
-        assert.equal(await page.locator('[data-gallery-open]').count(),13);
+        assert.equal(await page.locator('[data-gallery-event]').count(),6);
+        assert.equal(await page.locator('[data-gallery-open]').count(),14);
         const links=await page.locator('[data-gallery-open]').evaluateAll(els=>els.map(el=>el.href));
-        assert.equal(new Set(links).size,13,'Gallery shows thirteen distinct photos');
+        assert.equal(new Set(links).size,14,'Gallery shows fourteen distinct photos');
+        assert.equal(await page.locator('#award-dec-2025 [data-gallery-open]').count(),1);
+        assert.equal(await page.locator('main [data-photo-motion]').count(),await page.locator('main [data-photo-motion].motion-surface').count(),'Every marked photograph receives the shared motion contract');
+        for(const width of [1440,390]){
+          await page.setViewportSize({width,height:844});
+          const gap=await page.locator('#award-dec-2025').evaluate(section=>section.querySelector('.event-photos').getBoundingClientRect().top-section.querySelector('header').getBoundingClientRect().bottom);
+          assert.ok(gap <= (width===1440?160:96),`${width}px award photo follows its heading without an empty row`);
+        }
+        await page.setViewportSize({width:1440,height:1000});
+        const movingPhoto=page.locator('main [data-photo-motion]').first();
+        await movingPhoto.scrollIntoViewIfNeeded();
+        let box=await movingPhoto.boundingBox();
+        await page.mouse.move(box.x+box.width*.7,box.y+box.height*.4);
+        await page.waitForFunction(()=>document.querySelector('main [data-photo-motion]')?.style.getPropertyValue('--tilt-y'));
+        await page.emulateMedia({reducedMotion:'reduce'});
+        await page.waitForFunction(()=>!document.querySelector('main [data-photo-motion]')?.style.getPropertyValue('--tilt-y'));
+        box=await movingPhoto.boundingBox();
+        await page.mouse.move(box.x+box.width*.3,box.y+box.height*.6);
+        assert.equal(await movingPhoto.evaluate(el=>el.style.getPropertyValue('--tilt-y')),'','Reduced motion must keep photographs still');
+        await page.emulateMedia({reducedMotion:'no-preference'});
         const opener=page.locator('#launch-dec-2025 [data-gallery-open]').first();
         await opener.click();
         const dialog=page.locator('#photo-dialog');assert.ok(await dialog.isVisible());
@@ -91,6 +110,9 @@ async function checkMotionGallery(browser, only = 'all') {
         await page.locator('#rocket-dec-2025 [data-gallery-open]').click();
         assert.ok(await page.locator('[data-gallery-next]').isDisabled());
         assert.ok(await page.locator('[data-gallery-prev]').isDisabled());
+        await page.locator('[data-gallery-close]').click();await waitForClose();
+        await page.locator('#award-dec-2025 [data-gallery-open]').click();
+        assert.match(await page.locator('[data-gallery-count]').textContent(),/1\s*\/\s*1/);
         await page.locator('[data-gallery-close]').click();await waitForClose();
         await page.setViewportSize({width:390,height:844});
         await page.locator('#nura-aug-2025 [data-gallery-open]').first().click();
@@ -160,7 +182,7 @@ async function checkMotionGallery(browser, only = 'all') {
         const plain=await browser.newContext({javaScriptEnabled:false,reducedMotion:'reduce'});
         try {
           const p=await plain.newPage();await p.goto(`${base}/${locale}news.html`);
-          assert.equal(await p.locator('[data-gallery-open]').count(),13);
+          assert.equal(await p.locator('[data-gallery-open]').count(),14);
           assert.ok((await p.locator('[data-gallery-open]').first().getAttribute('href')).endsWith('.webp'));
           await p.goto(`${base}/${locale}projects.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
           await p.evaluate(()=>document.fonts.ready);
