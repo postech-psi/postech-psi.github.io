@@ -9,7 +9,7 @@ async function checkBrand(browser){
     const page=await context.newPage();
     for(const [name,run] of [
       ['authentic PSI logo closes every canonical footer',async()=>{
-        for(const route of ['index','projects','research','records','news','about','support']){
+        for(const route of ['index','projects','research','records','gallery','about','support']){
           await page.goto(`${base}/${locale}${route}.html`);
           const logo=page.locator('footer .footer-logo img');
           assert.equal(await logo.count(),1,`${route} has one footer logo`);

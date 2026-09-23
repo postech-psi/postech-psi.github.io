@@ -27,3 +27,25 @@ details[open]>summary .disclosure-icon{transform:rotate(45deg)}
 @media(prefers-reduced-motion:reduce){.disclosure-icon{transition:none}}
 .project-tabs{display:flex;gap:8px;padding-bottom:28px}.project-tabs button{min-height:44px;padding:10px 22px;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text);font:inherit;cursor:pointer}.project-tabs button[aria-selected=true]{background:var(--text);border-color:var(--text);color:var(--canvas)}.project-tabs button:focus-visible{outline:2px solid var(--text);outline-offset:3px}[data-project-panel][hidden]{display:none}.project-panel-head{padding:32px 0 58px}.project-panel-head h2{font-size:clamp(36px,5vw,70px);line-height:1.05;margin:8px 0 24px}.project-panel-head p{max-width:65ch}.project-panel-head .program-code{font-size:15px;letter-spacing:.04em}.project-panel-head .link-row{margin-top:28px}[data-project-panel] [id]{scroll-margin-top:110px}
 @media(max-width:700px){.project-tabs{padding-bottom:16px}.project-tabs button{flex:1}.project-panel-head{padding:24px 0 40px}}
+/* Records uses the same immediate-switch controls as Projects, without a hub. */
+.record-tabs{flex-wrap:wrap;padding-bottom:16px}
+.record-tabs button{white-space:normal}
+.record-panel{padding-top:20px;scroll-margin-top:var(--header-clearance)}
+.record-panel>h2{margin-bottom:16px}
+.record-panel>.research-filters{margin-top:24px}
+.record-panel>[data-result-count]{padding-block:16px}
+.record-panel>.evidence-list{margin-top:20px}
+.home-programs .program-cards>article{margin-block:0 64px}
+.home-programs .program-cards>article:last-child{margin-bottom:0}
+.project-tabs{padding-bottom:16px}
+.project-panel-head{padding-block:16px 32px}
+.study-feature{padding-block:40px 56px}
+.aircraft-feature{padding-bottom:56px}
+@media(max-width:700px){
+ .record-tabs button{flex:1 1 calc(50% - 8px);padding-inline:12px;font-size:16px}
+ .record-panel{padding-top:12px}
+ .project-panel-head{padding-block:12px 28px}
+ .study-feature{padding-block:28px 40px}
+ .home-programs .program-cards>article{margin-bottom:40px}
+ .home-programs .program-cards>article:last-child{margin-bottom:0}
+}

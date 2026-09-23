@@ -64,7 +64,7 @@ async function checkMotionGallery(browser, only = 'all') {
         await page.locator('[data-flight-video]').evaluate(v=>v.pause());
       }],
       ['gallery',async()=>{
-        const response=await page.goto(`${base}/${locale}news.html`);
+        const response=await page.goto(`${base}/${locale}gallery.html`);
         assert.equal(response.status(),200,'Gallery route exists');
         assert.equal(await page.locator('[data-gallery-event]').count(),6);
         assert.equal(await page.locator('[data-gallery-open]').count(),14);
@@ -122,7 +122,7 @@ async function checkMotionGallery(browser, only = 'all') {
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
       }],
       ['loading',async()=>{
-        await page.goto(`${base}/${locale}news.html`);
+        await page.goto(`${base}/${locale}gallery.html`);
         let release;const held=new Promise(resolve=>{release=resolve;});
         await page.route('**/*?loading-test',async route=>{await held;await route.continue().catch(()=>{});});
         const opener=page.locator('#launch-dec-2025 [data-gallery-open]').first();
@@ -181,7 +181,7 @@ async function checkMotionGallery(browser, only = 'all') {
       ['fallbacks',async()=>{
         const plain=await browser.newContext({javaScriptEnabled:false,reducedMotion:'reduce'});
         try {
-          const p=await plain.newPage();await p.goto(`${base}/${locale}news.html`);
+          const p=await plain.newPage();await p.goto(`${base}/${locale}gallery.html`);
           assert.equal(await p.locator('[data-gallery-open]').count(),14);
           assert.ok((await p.locator('[data-gallery-open]').first().getAttribute('href')).endsWith('.webp'));
           await p.goto(`${base}/${locale}projects.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);

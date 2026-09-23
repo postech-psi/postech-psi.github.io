@@ -15,11 +15,11 @@ export const sources = {
 };
 export const nav = [
   ['projects','Projects','프로젝트'],['research','Research','연구'],['records','Records','기록'],
-  ['news','News','소식'],['about','About','소개'],['support','Support & Contact','후원·문의']
+  ['gallery','Gallery','갤러리'],['about','About','소개'],['support','Support & Contact','후원·문의']
 ];
 export const pageTitles = {
   aircraft:text('Aircraft','항공기'),records:text('Records','기록'),
-  gallery:text('Photo archive','활동 사진'),
+  gallery:text('Gallery','갤러리'),
   avionics:text('Avionics','비행 전자장치'),tms:text('Thrust Measurement System','추력 측정 시스템'),
   index:text('PSI — Student aerospace at POSTECH','PSI — 포스텍 항공우주연구회'),
   projects:text('Projects','프로젝트'),pslv:text('PSLV rocket programme','PSLV 로켓 프로젝트'),

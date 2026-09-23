@@ -198,6 +198,52 @@
     tabKeyboard(projectTabs);
   }
 
+  const recordTabs=[...document.querySelectorAll('[data-record-tab]')];
+  const recordPanels=[...document.querySelectorAll('[data-record-panel]')];
+  if(recordTabs.length&&recordPanels.length){
+    document.querySelector('[data-record-tabs]').hidden=false;
+    for(const panel of recordPanels){
+      panel.setAttribute('role','tabpanel');
+      panel.setAttribute('aria-labelledby',`record-tab-${panel.id}`);
+      panel.tabIndex=0;
+    }
+    const recordTarget=()=>{
+      try{return document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{return null;}
+    };
+    const selectRecord=(id,updateHistory=false)=>{
+      for(const tab of recordTabs){
+        const selected=tab.dataset.recordTab===id;
+        tab.setAttribute('aria-selected',String(selected));
+        tab.tabIndex=selected?0:-1;
+      }
+      for(const panel of recordPanels)panel.hidden=panel.id!==id;
+      const state={...history.state,recordTab:id};
+      if(updateHistory&&location.hash!==`#${id}`)history.pushState(state,'',`#${id}`);
+      else history.replaceState(state,'');
+      if(languageLink){
+        const destination=new URL(languageLink.href);
+        destination.search=location.search;destination.hash=location.hash;
+        languageLink.href=destination.href;
+      }
+    };
+    const reconcileRecords=()=>{
+      const target=recordTarget(),panel=target?.closest('[data-record-panel]');
+      const selected=recordTabs.find(tab=>tab.getAttribute('aria-selected')==='true')?.dataset.recordTab;
+      const restored=recordPanels.find(panel=>panel.id===history.state?.recordTab)?.id;
+      // Page-level anchors retain their category, including on Back / Forward.
+      selectRecord(panel?.id||(target?(restored||selected):null)||recordPanels[0].id);
+      // A linked research record must not remain hidden by an earlier filter.
+      if(target?.matches('[data-research-item]')&&target.hidden)target.closest('[data-research-archive]')?.querySelector('form').reset();
+      if(panel)requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));
+    };
+    for(const tab of recordTabs)tab.addEventListener('click',()=>selectRecord(tab.dataset.recordTab,true));
+    tabKeyboard(recordTabs);
+    addEventListener('hashchange',reconcileRecords);
+    addEventListener('popstate',reconcileRecords);
+    addEventListener('pageshow',reconcileRecords);
+    reconcileRecords();
+  }
+
   function tabKeyboard(buttons, currentOrientation) {
     buttons.forEach((button, index) => button.addEventListener('keydown', event => {
       const vertical = currentOrientation ? currentOrientation() : button.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical';

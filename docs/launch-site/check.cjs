@@ -14,6 +14,7 @@ const { checkEngineering } = require('./check-engineering.cjs');
 const { checkSimpleNavigation } = require('./check-simple-navigation.cjs');
 const { checkSupporters } = require('./check-supporters.cjs');
 const { checkSupportContact } = require('./check-support-contact.cjs');
+const { checkReviewFollowups } = require('./check-review-followups.cjs');
 const { checkCopy } = require('./check-copy.cjs');
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 (async () => {
@@ -23,6 +24,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
   const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
   const errors = [];
   try {
+    await checkReviewFollowups(browser);
     await checkSimpleNavigation(browser);
     await checkReel(browser);
     await checkHomepage(browser);
@@ -49,7 +51,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await page.goto(`${base}/projects.html`);
     await page.locator('[data-language-link]').click();
     assert.ok(page.url().endsWith('/ko/projects.html'),'Language switch must keep page');
-    await page.goto(`${base}/records.html`);
+    await page.goto(`${base}/records.html#research-archive`);
     assert.equal(await page.locator('[data-research-item]:visible').count(),15);
     await page.locator('[data-filter-topic]').selectOption('avionics');
     const filtered = await page.locator('[data-research-item]:visible').count();

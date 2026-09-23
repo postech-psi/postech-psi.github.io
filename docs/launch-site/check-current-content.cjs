@@ -42,7 +42,7 @@ async function checkCurrentContent(browser) {
         assert.ok(await details.locator('[data-research-method]').isVisible());
         assert.ok(await details.locator('[data-research-next]').isVisible());
         assert.equal(await page.locator('[data-research-item]').count(),0,'History is absent from current research');
-        await page.goto(`${base}/${locale}records.html`);
+        await page.goto(`${base}/${locale}records.html#research-archive`);
         assert.equal(await page.locator('.study-navigation').count(),0,'Records does not need a second navigation strip');
         assert.equal(await page.locator('[data-filter-type]').count(),1,'Archive filters remain available');
         assert.equal(await page.locator('[data-research-item]:visible').count(),15,'Historical archive remains complete in Records');
@@ -52,9 +52,9 @@ async function checkCurrentContent(browser) {
         await page.locator('[data-filter-reset]').click();
         assert.equal(await page.locator('[data-research-item]:visible').count(),15);
         assert.equal(await current.locator('a[href*="sharepoint"],a[href*="onedrive"]').count(),0,'Private manuscript storage must not be linked');
-        await page.goto(`${base}/${locale}news.html`);
-        assert.equal(await page.locator('.album-navigation').count(),0,'News does not need a jump-link strip');
-        assert.equal(await page.locator('#award-dec-2025 [data-gallery-open]').count(),1,'The public award photograph belongs in News');
+        await page.goto(`${base}/${locale}gallery.html`);
+        assert.equal(await page.locator('.album-navigation').count(),0,'Gallery does not need a jump-link strip');
+        assert.equal(await page.locator('#award-dec-2025 [data-gallery-open]').count(),1,'The public award photograph belongs in Gallery');
         assert.equal(await page.locator('[data-gallery-open] .media-play').count(),0,'Photo links are not video controls');
       });
       await check(`${locale || 'en/'} first study reaches the initial research viewport`, async () => {

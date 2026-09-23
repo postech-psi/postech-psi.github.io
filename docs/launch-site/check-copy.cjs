@@ -10,7 +10,7 @@ function checkCopy() {
       assert.ok(!home.includes(filler), `Remove empty framing: ${filler}`);
     }
     const pslv = read(lang, 'projects');
-    const news = read(lang, 'news');
+    const news = read(lang, 'gallery');
     const detailCaption = lang ? '발사 레일에 설치된 PSI 로켓 동체.' : 'The PSI rocket body on the launch rail.';
     for (const page of [home, pslv, news]) assert.ok(page.includes(detailCaption), 'Rocket close-up has a concrete bilingual description');
     assert.ok(news.includes(lang ? 'PSI 아카이브의 사진입니다.' : 'Photographs from the PSI archive.'));

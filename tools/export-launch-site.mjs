@@ -51,7 +51,7 @@ export async function exportSite(output = repository) {
     outputFiles.set(`assets/${name}`, await readFile(join(source, 'assets', name)));
   }
   outputFiles.set('assets/index.html',await readFile(join(source,'assets','index.html')));
-  for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
+  for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'gallery.html', 'Gallery']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
   for (const lang of ['en','ko']) {
     const name=`${lang==='ko'?'ko/':''}contact.html`;
     const content=await readFile(join(source,name));

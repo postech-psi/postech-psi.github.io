@@ -71,7 +71,7 @@ async function checkSimpleNavigation(browser){
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('#main').evaluate(el=>el.inert),false);
   await page.setViewportSize({width:1440,height:1000});
-  for(const [from,to] of [['tms.html?test=2026-04-08-combustion#test-results','projects.html?test=2026-04-08-combustion#test-results'],['avionics.html#architecture','projects.html#architecture'],['gallery.html#launch-dec-2025','news.html#launch-dec-2025'],['join.html','about.html#participation'],['learning.html','about.html#participation']]){
+  for(const [from,to] of [['tms.html?test=2026-04-08-combustion#test-results','projects.html?test=2026-04-08-combustion#test-results'],['avionics.html#architecture','projects.html#architecture'],['news.html#launch-dec-2025','gallery.html#launch-dec-2025'],['join.html','about.html#participation'],['learning.html','about.html#participation']]){
    await page.goto(`${base}/${prefix}${from}`);await page.waitForURL(`${base}/${prefix}${to}`);
    if(from.startsWith('avionics'))assert.ok(await page.locator('#architecture').isVisible());
   }
@@ -88,7 +88,7 @@ async function checkSimpleNavigation(browser){
   assert.equal(await page.locator('#participation').count(),1);assert.equal(await page.locator('#learning').count(),0);
   for(const route of ['index','projects','pslv','aircraft','research','records','news','about']){
    await page.goto(`${base}/${prefix}${route}.html`);
-   assert.equal(await page.locator('a[href]').evaluateAll(as=>as.filter(a=>/^(avionics|tms|gallery|join|learning)\.html/.test(a.getAttribute('href'))).length),0,`${route} exposes only canonical destinations`);
+   assert.equal(await page.locator('a[href]').evaluateAll(as=>as.filter(a=>/^(avionics|tms|news|join|learning)\.html/.test(a.getAttribute('href'))).length),0,`${route} exposes only canonical destinations`);
   }
   await page.goto(`${base}/${prefix}projects.html`);
   assert.equal(await page.locator('main h1').count(),1);
@@ -108,7 +108,7 @@ async function checkSimpleNavigation(browser){
  await fallback.locator('[data-system="tms"] > summary').click();
  assert.ok(await fallback.locator('[data-results-fallback]').isVisible());
  await nojs.close();
- console.log('PASS simple navigation: bilingual canonical routes, native engineering disclosures, original charts, compatibility deep links, News photos, About participation, project switch and reduced motion');
+ console.log('PASS simple navigation: bilingual canonical routes, native engineering disclosures, original charts, compatibility deep links, Gallery photos, About participation, project switch and reduced motion');
  }finally{await page.close();}
 }
 module.exports={checkSimpleNavigation};

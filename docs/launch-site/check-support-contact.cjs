@@ -2,12 +2,14 @@ const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
 const {setTheme}=require('./test-helpers.cjs');
 const base=process.env.PSI_URL||'http://127.0.0.1:8767';
+const isCampusMap=url=>url.hostname==='openstreetmap.org'||url.hostname.endsWith('.openstreetmap.org');
 
 async function checkSupportContact(browser){
  for(const prefix of ['','ko/']){
   const context=await browser.newContext();
   const page=await context.newPage();
-  await page.route('**/openstreetmap.org/**',route=>route.abort());
+  let blockedMaps=0;
+  await page.route(isCampusMap,route=>{blockedMaps++;return route.abort();});
   try{
    const response=await page.goto(`${base}/${prefix}support.html`);
    assert.equal(response.status(),200,'Support page is built');
@@ -38,12 +40,14 @@ async function checkSupportContact(browser){
    assert.equal(await page.locator('[data-support-success]').count(),0,'A draft is not a delivered message');
    await page.goto(`${base}/${prefix}contact.html`);
    await page.waitForURL(`${base}/${prefix}support.html#contact`);
+   await page.locator('[data-campus-map]').scrollIntoViewIfNeeded();
+   assert.ok(blockedMaps>0,'Map fallback must actually block the external map request');
    console.log(`PASS: ${prefix||'en/'} support, email draft, map fallback and contact redirect`);
   }finally{await context.close();}
   const fallback=await browser.newContext({javaScriptEnabled:false});
   try{
    const plain=await fallback.newPage();
-   await plain.route('**/openstreetmap.org/**',route=>route.abort());
+   await plain.route(isCampusMap,route=>route.abort());
    await plain.goto(`${base}/${prefix}support.html`);
    assert.ok(await plain.locator('a[href="mailto:uikangee@postech.ac.kr"]').isVisible());
    assert.ok((await plain.locator('#contact').innerText()).includes(prefix?'청암로 77':'77 Cheongam-ro'));

@@ -45,7 +45,7 @@ async function checkReel(browser){
   await reel.locator('[data-reel-slide="3"] .reel-image').dispatchEvent('click');
   assert.ok(page.url().endsWith('index.html'),'Completing a swipe must not follow the image link');
   assert.ok(Math.abs((await reel.boundingBox()).height-firstBox.height)<1,'Reel keeps stable dimensions');
-  assert.equal(await reel.locator('[data-reel-slide="3"] a').first().getAttribute('href'),'news.html#test-may-2025','Workshop links to its actual event');
+  assert.equal(await reel.locator('[data-reel-slide="3"] a').first().getAttribute('href'),'gallery.html#test-may-2025','Workshop links to its actual event');
   await page.reload();await reel.scrollIntoViewIfNeeded();await page.waitForTimeout(100);await page.mouse.move(0,0);
   await page.clock.runFor(15000);assert.equal(await selected(),'0','Reduced-motion reload starts paused');
   await page.emulateMedia({reducedMotion:'no-preference'});

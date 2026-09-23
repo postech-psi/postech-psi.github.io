@@ -23,7 +23,7 @@ assert.ok(!names.some(name=>/docs\/|review\/|manifest|spring-community|Barlow|\.
 for(const name of ['postech','postech-me','matlab','ansys'])assert.ok(names.includes(`assets/supporter-${name}.png`),'Supporter logo exports: '+name);
 assert.ok(names.includes('assets/supporter-sources.md'),'Public logo provenance exports');
 assert.ok(!names.some(name=>/ansys\.zip|mathworks-white|matlab-icon|task4|extract-prose/.test(name)),'Unused artwork and editorial scratch stay private');
-for(const [name,target] of [['team.html','about.html'],['events.html','news.html']]) {
+for(const [name,target] of [['team.html','about.html'],['events.html','gallery.html']]) {
  const html=await readFile(join(destination,name),'utf8');
  assert.ok(html.includes('rel="icon" type="image/png" href="assets/psi-emblem.png"'),'Legacy routes carry the browser icon');
  assert.ok(html.includes('url='+target)&&html.includes('href="'+target+'"'),'Legacy address has a no-JS destination');
