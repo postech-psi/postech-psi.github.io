@@ -1,11 +1,11 @@
 {
   "generator": "psi-launch-site",
-  "revision": "6bb887351e577bdff2f7dfd478138d2fa6ce1a060fd77f6e3e7c14ea8248f65e",
+  "revision": "e1b39941012523fc632f5ec1d26a593b7803cbd0579a322e7fb8cb679dba2601",
   "files": [
     {
       "path": "about.html",
-      "sha256": "cc2d583dc8ef9890a706f22a56ab4a82aa39fc1c53ce82042109a3df00242ba3",
-      "bytes": 11204
+      "sha256": "696797e0f95f6b779daa980f8754cb0cd0d5c5d37a24decd970f9fbface15237",
+      "bytes": 11865
     },
     {
       "path": "aircraft.html",
@@ -151,6 +151,16 @@
       "path": "assets/onboard.mp4",
       "sha256": "db8b8d653c7c36a25fd7afe931beecf047f11367c6e0b3f121822cce41211494",
       "bytes": 19930638
+    },
+    {
+      "path": "assets/postech-black-logo.png",
+      "sha256": "708081cd26c308505cc735eb33f576cfceadb098087a41c4a868b37bc074a8db",
+      "bytes": 3183
+    },
+    {
+      "path": "assets/postech-red-logo.png",
+      "sha256": "b405dbe1a28c3352ef0d7e9d8b68da2d6d05ccabf3ce419d38fc244d417aaaae",
+      "bytes": 2918
     },
     {
       "path": "assets/psi-emblem.png",
@@ -399,8 +409,8 @@
     },
     {
       "path": "index.html",
-      "sha256": "4bd1255bbe40235effaa707d625b55d4c57455466899baf51b2b60c722572e31",
-      "bytes": 13649
+      "sha256": "34f83607a24b70d58dcf3d1a323066ace3149fe379af0ef618d8cce1f6a8ab37",
+      "bytes": 14310
     },
     {
       "path": "join.html",
@@ -409,8 +419,8 @@
     },
     {
       "path": "ko/about.html",
-      "sha256": "d151d8ea24dda9ee8c9ed889b61041aa57591860d6339a1c3b140cec87e7c764",
-      "bytes": 11336
+      "sha256": "a3e7ed0a34c2a96a12a6f945cf841536a1ae11a3c41ff595a0927d76eb1361db",
+      "bytes": 12015
     },
     {
       "path": "ko/aircraft.html",
@@ -434,8 +444,8 @@
     },
     {
       "path": "ko/index.html",
-      "sha256": "e5051e486bb35792702f59651f9eedefed29816bfdd41553f8c0521e0d0f9758",
-      "bytes": 13965
+      "sha256": "42eaca12dcf4309842b68046a9b1dc6112e4094d70deb2b2029c33053ae26ce5",
+      "bytes": 14644
     },
     {
       "path": "ko/join.html",
@@ -449,13 +459,13 @@
     },
     {
       "path": "ko/news.html",
-      "sha256": "55cdfbc958a181678fe1db65630a36f277a9c50bd31518821326921f3dc73d95",
-      "bytes": 19605
+      "sha256": "e21b833b8673638ec550c92728d60918e957c58f3ba34e69e08cc0385bcf37d7",
+      "bytes": 20284
     },
     {
       "path": "ko/projects.html",
-      "sha256": "a673cec263c5a0c810c02ac8fe60c45fd7f35f8941351f52315af74f1f0c5ddc",
-      "bytes": 36294
+      "sha256": "5def7cc5617ad73fd9620a824b2804bcc16d9b0681f276d4f4fd98a2de45c95a",
+      "bytes": 36973
     },
     {
       "path": "ko/pslv.html",
@@ -464,18 +474,18 @@
     },
     {
       "path": "ko/records.html",
-      "sha256": "00ffa3d5824b3b133b1b818bb8f1c27d72694066e1eb162cdf95ff229bebfd6d",
-      "bytes": 20045
+      "sha256": "427d2773c2cf79c72c2ca0c69c35a7ed45c39f7a78ae9efa7c4d390037f65c8f",
+      "bytes": 20724
     },
     {
       "path": "ko/research.html",
-      "sha256": "6bb993b8d2eab89e37630959ff1b4b5695891c5204d04e04e0245ce00fdff62f",
-      "bytes": 17924
+      "sha256": "f716730fd82e5be7037691c55478a459ff83c19927d9a3722c81cfb50d643903",
+      "bytes": 18603
     },
     {
       "path": "ko/support.html",
-      "sha256": "219d05d48b04cf03a7091c7c7cc6cc61504e5411e6f2837d70d06b383fed62ca",
-      "bytes": 8971
+      "sha256": "37d1162296fa6b0b4f50d8196ab82d3f5cc08a0cb8c11cc60bce01eb2045cd16",
+      "bytes": 9650
     },
     {
       "path": "ko/tms.html",
@@ -494,8 +504,8 @@
     },
     {
       "path": "news.html",
-      "sha256": "782c54c58da612b70065a86a61f7c73ac702ac180363ef8a57e77921c6f85b3a",
-      "bytes": 19295
+      "sha256": "9e2fbb547e44f836c51fce1d5bc91c6083453e05f6656ac9a70a902452121954",
+      "bytes": 19956
     },
     {
       "path": "program-pages.css",
@@ -504,8 +514,8 @@
     },
     {
       "path": "projects.html",
-      "sha256": "f3da73ea65340bf87bfc65423d8c275e6fb640f0cece9aadc3f1d0d16fbf68e5",
-      "bytes": 35279
+      "sha256": "ffc18aeb1f2534637ec21de208a538d2ae96646b3108d58e430f3c0a4b1698f2",
+      "bytes": 35940
     },
     {
       "path": "pslv.html",
@@ -514,18 +524,18 @@
     },
     {
       "path": "records.html",
-      "sha256": "755dc278a084b10f2a98aefa578d53cc7b4bb6a6b6405fc56b5aad391c85fabf",
-      "bytes": 21104
+      "sha256": "162a1d129f587e143c52ff4bdebb86dfeaa71356f0bfaca2f3fab64b896403bc",
+      "bytes": 21765
     },
     {
       "path": "research.html",
-      "sha256": "0a5c4d9468dc215bc7204ac627155a209f7e9361466271a3c5cbbeaba4bf70a9",
-      "bytes": 17349
+      "sha256": "4e1d99bfaa3f2236b4ae193640bdf2768c4350b954fe8a089068b511d682d1d7",
+      "bytes": 18010
     },
     {
       "path": "site.css",
-      "sha256": "a4651a9daa50838388dcc1e741a75b06bc8031abcd86ceef6492c08c8ced1192",
-      "bytes": 70688
+      "sha256": "2c78a9f74ec4eb7d88c58f12ea345513733e3d2a8de7fb601622a80aff9a4878",
+      "bytes": 71975
     },
     {
       "path": "site.js",
@@ -534,8 +544,8 @@
     },
     {
       "path": "support.html",
-      "sha256": "3efa131525d2562ce8d4660efad8a5285824f4bd43d4932b709c7ef6523238d5",
-      "bytes": 8748
+      "sha256": "2836ba4e297b65ff03daf7e582f6c08e1f1a629450803025e7f43b043b2684b8",
+      "bytes": 9409
     },
     {
       "path": "team.html",

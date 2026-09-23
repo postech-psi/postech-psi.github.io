@@ -36,8 +36,8 @@ async function checkPolish(browser) {
       await page.addStyleTag({content:'html{overflow-y:scroll;scrollbar-gutter:stable}'});
       for (const width of [320,390,901,1440]) {
         await page.setViewportSize({width,height:1000});
-        const logo = await page.locator('.brand img').boundingBox();
-        assert.ok(logo.width >= (width>1100?190:120),'Wordmark uses more of the header');
+        const logo = await page.locator('.brand').boundingBox();
+        assert.ok(logo.width >= (width>1100?280:width<=360?110:140),'Wordmark pair uses more of the header');
         for (const control of ['[data-media-play]','[data-motion-toggle]']) {
           const box = await page.locator(control).boundingBox();
           assert.ok(box && box.width>=44 && box.width<=48 && box.height>=44,'Film controls are compact icons, not text boxes');
