@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
-const base=(process.env.PSI_URL||'http://127.0.0.1:8870').replace(/\/$/,'');
+const base=(process.env.PSI_URL||'http://127.0.0.1:8767').replace(/\/$/,'');
 async function checkSimpleNavigation(browser){
  const page=await browser.newPage({viewport:{width:1440,height:1000}});
  try{
@@ -43,26 +43,26 @@ async function checkSimpleNavigation(browser){
   assert.equal(await page.locator('footer').evaluate(el=>el.inert),false);
   await page.setViewportSize({width:1440,height:1000});
   await page.goto(`${base}/${prefix}pslv.html`);
-  assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),6,'Six main destinations include support and contact');
+  assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),5,'Five destinations include combined About and Support');
   assert.equal(await page.locator('h1').count(),1);
-  assert.equal(await page.locator('[data-system][open]').count(),0,'Systems start collapsed');
+  assert.equal(await page.locator('[data-system][open]').count(),1,'Avionics is selected by default');
   const originalPath=new URL(page.url()).pathname;
-  await page.locator('[data-system="avionics"] > summary').click();
+  await page.locator('[data-system-tab="avionics"]').click();
   assert.equal(new URL(page.url()).pathname,originalPath);
   assert.ok(await page.locator('[data-system="avionics"] [data-architecture-flow]').isVisible());
-  assert.ok(await page.locator('[data-system="avionics"]').evaluate(el=>el.getAnimations().length>0),'Disclosure has a real animation');
-  await page.locator('[data-system="tms"] > summary').click();
+  assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.getAnimations().length),0,'Selection does not animate or resize the reading column');
+  await page.locator('[data-system-tab="tms"]').click();
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
   await page.locator('#dt-canvas-thrust canvas').waitFor({state:'visible'});
   assert.ok((await page.locator('#dt-canvas-thrust canvas').boundingBox()).width>100);
   assert.ok(await page.locator('#dt-canvas-thrust canvas').isVisible());
   await page.waitForFunction(()=>document.querySelectorAll('[data-system][open]').length===1);
   assert.equal(await page.locator('[data-system][open]').count(),1,'One focal system stays open');
-  const avionics=page.locator('[data-system="avionics"] > summary');
+  const avionics=page.locator('[data-system-tab="avionics"]');
   await avionics.focus();await page.keyboard.press('Enter');await page.keyboard.press('Space');await page.keyboard.press('Enter');
   await page.setViewportSize({width:390,height:844});
   await page.waitForFunction(()=>document.querySelectorAll('[data-system][open]').length===1&&document.querySelector('[data-system="avionics"]').open);
-  assert.equal(await page.locator('[data-system][open]').getAttribute('data-system'),'avionics','Interrupted keyboard toggles settle on the last requested system');
+  assert.equal(await page.locator('[data-system][open]').getAttribute('data-system'),'avionics','Repeated keyboard selection retains the selected system');
   assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.style.height),'','Resize does not leave a fixed clipping height');
   await page.locator('[data-theme-toggle]').click();
   assert.ok(await page.locator('[data-theme-toggle]').evaluate(el=>el.getAnimations().length>0));
@@ -77,7 +77,7 @@ async function checkSimpleNavigation(browser){
   }
   await page.goto(`${base}/${prefix}news.html`);
   const newsPath=new URL(page.url()).pathname;
-  await page.locator('[data-gallery-open]').first().click();
+  await page.locator('#launch-dec-2025 [data-gallery-open]').first().click();
   assert.ok(await page.locator('#photo-dialog').isVisible());
   assert.equal(new URL(page.url()).pathname,newsPath);
   await page.locator('[data-gallery-next]').click();
@@ -97,7 +97,7 @@ async function checkSimpleNavigation(browser){
   assert.equal(await page.locator('[data-project-panel="pslv"]').isVisible(),false);
  }
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'/pslv.html');
- await page.locator('[data-system="avionics"] > summary').click();
+ await page.locator('[data-system-tab="avionics"]').click();
  assert.ok(await page.locator('#architecture').isVisible());
  assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.getAnimations().length),0);
  await page.locator('[data-theme-toggle]').click();assert.equal(await page.locator('[data-theme-toggle]').evaluate(el=>el.getAnimations().length),0);

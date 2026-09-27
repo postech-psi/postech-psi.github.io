@@ -20,7 +20,9 @@ for(const prefix of ['', 'ko/'])for(const route of routes)assert.ok(names.includ
 assert.equal(routes.length,14);
 for(const name of ['site.css','site.js','motion.js','program-pages.css','telemetry.mjs','assets/onboard.mp4','assets/onboard-poster.webp','assets/archive-telemetry.json','assets/Pretendard.woff2','assets/Pretendard-LICENSE.txt','assets/rocket-detail.webp'])assert.ok(names.includes(name),'Required runtime asset '+name);
 assert.ok(!names.some(name=>/docs\/|review\/|manifest|spring-community|Barlow|\.(pdf|pptx|cjs)$/i.test(name)),'Only the intended public subset is exported');
-for(const name of ['postech','postech-me','matlab','ansys'])assert.ok(names.includes(`assets/supporter-${name}.png`),'Supporter logo exports: '+name);
+for(const name of ['postech','kai-light','kai-dark','mathworks-light','mathworks-dark','ansys','ansys-light'])assert.ok(names.includes(`assets/supporter-${name}.png`),'Supporter logo exports: '+name);
+assert.ok((await readFile(join(destination,'about.html'),'utf8')).includes('https://me.postech.ac.kr/ko/'),'Mechanical Engineering keeps its own entry on the merged page');
+assert.ok((await readFile(join(destination,'support.html'),'utf8')).includes('about.html#support'),'Legacy support links reach the direct enquiry');
 assert.ok(names.includes('assets/supporter-sources.md'),'Public logo provenance exports');
 assert.ok(!names.some(name=>/ansys\.zip|mathworks-white|matlab-icon|task4|extract-prose/.test(name)),'Unused artwork and editorial scratch stay private');
 for(const [name,target] of [['team.html','about.html'],['events.html','gallery.html']]) {
@@ -32,7 +34,7 @@ for(const [prefix,lang,icon] of [['','en','assets/psi-emblem.png'],['ko/','ko','
  const name=`${prefix}contact.html`,html=await readFile(join(destination,name),'utf8');
  assert.ok(html.includes(`<html lang="${lang}"`));
  assert.ok(html.includes(`href="${icon}"`),'Contact redirect carries a prefix-safe browser icon');
- assert.ok(html.includes('support.html#contact'),'Contact redirects to the new enquiry page');
+ assert.ok(html.includes('about.html#contact'),'Contact redirects to the merged enquiry page');
 }
 for(const file of release.files) {
  const content=await readFile(join(destination,file.path));

@@ -12,9 +12,9 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('.join-steps,.faq-section,#learning').count(),0,'About removes the long join, FAQ and notebook sections');
   assert.equal(await page.locator('.organisation-table tbody tr').count(),6,'About describes six roles in one table');
   assert.equal(await page.locator('.organisation-table th[scope="row"]').count(),6,'Every organisation role is a table row heading');
-  assert.equal(await page.locator('a[href="mailto:uikangee@postech.ac.kr"]').count(),1,'About has one direct president contact');
-  assert.equal(await page.locator('main > .support-section').evaluate(el=>el===document.querySelector('main').lastElementChild),true,'Supporters close About');
-  const recordsLink=page.getByRole('link',{name:prefix?'날짜별 기록 살펴보기':'Browse the dated records',exact:true});
+  assert.equal(await page.locator('main a[href="mailto:uikangee@postech.ac.kr"]').count(),1,'About has one direct president contact');
+  assert.equal(await page.locator('main .supporter-list').count(),1,'Merged About has one supporter list');
+  const recordsLink=page.locator('.site-nav a[href="records.html"]');
   assert.equal(await recordsLink.getAttribute('href'),'records.html','About uses the canonical Records destination');
   await recordsLink.click();await page.waitForURL(base+prefix+'records.html');
   assert.equal(await page.locator('#research-archive').count(),1);
@@ -24,11 +24,11 @@ const {chromium}=require('playwright');
   await relatedLink.click();await page.waitForURL(base+prefix+'records.html#ksas-2025-fusion');
   assert.equal(await page.locator('#ksas-2025-fusion').count(),1);
   await page.goto(base+prefix+'index.html');
-  assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'연구':'Research','Research invitation uses the concise section title');
+  assert.equal(await page.locator('.home-identity h1').count(),1,'Home identifies its core purpose');
   assert.equal(await page.locator('[data-program]').count(),2);
-  assert.equal(await page.locator('.testing-feature a.test-action').first().getAttribute('href'),'projects.html#test-results');
+  assert.equal(await page.locator('.home-support a.button').getAttribute('href'),'about.html#support');
   await page.goto(base+prefix+'projects.html');
-  assert.deepEqual(await page.locator('.site-nav > a, .nav-projects > a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','gallery.html','about.html','support.html']);
+  assert.deepEqual(await page.locator('.site-nav > a, .nav-projects > a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','gallery.html','about.html']);
   assert.equal(await page.locator('[data-project-tab]').count(),2);
   await page.locator('[data-project-tab="aircraft"]').click();
   assert.match(page.url(),/projects\.html#project-aircraft$/);
@@ -62,7 +62,7 @@ const {chromium}=require('playwright');
   for(const route of ['projects','aircraft','research','records','news','about'])for(const width of [320,390,768,1440]){
    await page.setViewportSize({width,height:1000});await page.goto(base+prefix+route+'.html');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${prefix}${route} at ${width}`);
-   assert.equal(await page.locator('main a[href*="sharepoint"],main a[href*="onedrive"],main iframe').count(),0);
+   assert.equal(await page.locator('main a[href*="sharepoint"],main a[href*="onedrive"],main iframe:not([data-campus-map])').count(),0);
    await page.screenshot({path:require('node:path').join(__dirname,'review',`task2-${prefix?'ko':'en'}-${route}-${width}.png`),fullPage:true});
   }
   for(const route of routes){

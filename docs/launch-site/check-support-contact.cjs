@@ -14,9 +14,9 @@ async function checkSupportContact(browser){
    const response=await page.goto(`${base}/${prefix}support.html`);
    assert.equal(response.status(),200,'Support page is built');
    assert.equal(await page.locator('main h1').count(),1);
-   assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),6);
-   assert.equal(await page.locator('.supporter-list a').count(),4);
-   assert.equal(await page.locator('a[href="mailto:uikangee@postech.ac.kr"]').count(),1);
+   assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),5);
+   assert.equal(await page.locator('.supporter-list a').count(),5);
+   assert.equal(await page.locator('main a[href="mailto:uikangee@postech.ac.kr"]').count(),1);
    assert.ok((await page.locator('#contact').innerText()).includes(prefix?'청암로 77':'77 Cheongam-ro'));
    assert.equal(await page.locator('[data-campus-map][loading="lazy"][title]').count(),1);
    assert.equal(await page.locator('a[href="https://www.postech.ac.kr/eng/about/campus_map.do"]').count(),1);
@@ -27,6 +27,7 @@ async function checkSupportContact(browser){
      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${prefix} ${theme} support fits ${width}px`);
     }
    }
+   await page.locator('[data-contact-compose] summary').click();
    await page.getByLabel(prefix?'이름':'Name',{exact:true}).fill('Test Visitor');
    await page.getByLabel(prefix?'답장 이메일':'Reply email',{exact:true}).fill('visitor@example.com');
    await page.getByLabel(prefix?'문의 내용':'Message',{exact:true}).fill('Materials for PSI');
@@ -39,7 +40,7 @@ async function checkSupportContact(browser){
    assert.ok(decodeURIComponent(href).includes('Materials for PSI'));
    assert.equal(await page.locator('[data-support-success]').count(),0,'A draft is not a delivered message');
    await page.goto(`${base}/${prefix}contact.html`);
-   await page.waitForURL(`${base}/${prefix}support.html#contact`);
+   await page.waitForURL(`${base}/${prefix}about.html#contact`);
    await page.locator('[data-campus-map]').scrollIntoViewIfNeeded();
    assert.ok(blockedMaps>0,'Map fallback must actually block the external map request');
    console.log(`PASS: ${prefix||'en/'} support, email draft, map fallback and contact redirect`);
@@ -49,7 +50,9 @@ async function checkSupportContact(browser){
    const plain=await fallback.newPage();
    await plain.route(isCampusMap,route=>route.abort());
    await plain.goto(`${base}/${prefix}support.html`);
-   assert.ok(await plain.locator('a[href="mailto:uikangee@postech.ac.kr"]').isVisible());
+   await plain.waitForURL(`${base}/${prefix}about.html#support`);
+   await plain.locator('main a[href="mailto:uikangee@postech.ac.kr"]').waitFor({state:'visible'});
+   assert.ok(await plain.locator('main a[href="mailto:uikangee@postech.ac.kr"]').isVisible());
    assert.ok((await plain.locator('#contact').innerText()).includes(prefix?'청암로 77':'77 Cheongam-ro'));
    assert.ok(await plain.locator('a[href="https://www.postech.ac.kr/eng/about/campus_map.do"]').isVisible());
    assert.equal(await plain.locator('[data-support-form]').getAttribute('action'),'mailto:uikangee@postech.ac.kr');

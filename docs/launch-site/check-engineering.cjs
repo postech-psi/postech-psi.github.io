@@ -69,6 +69,9 @@ async function checkEngineering(browser){
       assert.ok(box.y>=headerHeight&&box.y<=headerHeight+150,'Anchor target stays below the persistent navigation');
     }
     await page.goto(`${base}/${locale}news.html#award-dec-2025`);
+    await page.waitForURL(`${base}/${locale}gallery.html#award-dec-2025`);
+    await page.evaluate(()=>document.fonts.ready);
+    await page.waitForFunction(()=>{const top=document.querySelector('#award-dec-2025').getBoundingClientRect().top;const height=document.querySelector('.site-header').getBoundingClientRect().height;return top>=height&&top<=height+150;},null,{timeout:2000});
     const awardBox=await page.locator('#award-dec-2025').boundingBox();
     const newsHeaderHeight=(await page.locator('.site-header').boundingBox()).height;
     assert.ok(awardBox.y>=newsHeaderHeight&&awardBox.y<=newsHeaderHeight+150,'Direct News event links clear the sticky header');

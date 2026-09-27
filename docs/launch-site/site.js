@@ -16,7 +16,9 @@
   const requestedTrial=new URLSearchParams(location.search).get('test');
   if(trialSelect&&[...trialSelect.options].some(option=>option.value===requestedTrial))trialSelect.value=requestedTrial;
   const languageLink=document.querySelector('[data-language-link]');
-  if(languageLink){const destination=languageLink.getAttribute('href');const updateLanguage=()=>{languageLink.setAttribute('href',destination+location.search+location.hash);};updateLanguage();addEventListener('hashchange',updateLanguage);}
+  const languageDestination=languageLink?.getAttribute('href');
+  const updateLanguage=()=>{if(languageLink)languageLink.setAttribute('href',languageDestination+location.search+location.hash);};
+  updateLanguage();addEventListener('hashchange',updateLanguage);addEventListener('popstate',updateLanguage);
   const themeButton = document.querySelector('[data-theme-toggle]');
   const systemTheme = matchMedia('(prefers-color-scheme: dark)');
   let theme = 'light';
@@ -167,12 +169,55 @@
   menuBreakpoint.addEventListener('change', () => {setMenu(false);setProjectMenu(false);});
   window.addEventListener('pageshow', () => {setMenu(false);setProjectMenu(false);});
 
+  // The project and subsystem share one URL reconciliation path. Reveal content
+  // synchronously before the single scheduled deep-link scroll.
+  const hashTarget=()=>{try{return document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{return null;}};
+  const workspace=document.querySelector('[data-system-workspace]');
+  const systemTabs=[...document.querySelectorAll('[data-system-tab]')];
+  const systems=[...document.querySelectorAll('[data-system]')];
+  const systemSelect=document.querySelector('[data-system-select]');
+  const compactSystems=matchMedia('(max-width:750px)');
+  let currentSystem='avionics';
+  const selectSystem=(id,{updateHistory=false}={})=>{
+    if(!workspace)return;
+    if(!systems.some(panel=>panel.dataset.system===id))id='avionics';
+    const focusedPanel=document.activeElement?.closest('[data-system]');
+    currentSystem=id;
+    for(const tab of systemTabs){const selected=tab.dataset.systemTab===id;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;}
+    for(const panel of systems){
+      const selected=panel.dataset.system===id;
+      panel.open=selected;panel.hidden=!selected;
+      panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','system-tab-'+panel.dataset.system);
+      panel.tabIndex=0;
+    }
+    systemSelect.value=id;
+    if(focusedPanel&&focusedPanel.dataset.system!==id){
+      (compactSystems.matches?systemSelect:systemTabs.find(tab=>tab.dataset.systemTab===id)).focus({preventScroll:true});
+    }
+    if(updateHistory&&location.hash!=='#'+id){
+      history.pushState({...history.state,system:id},'','#'+id);updateLanguage();
+    }else history.replaceState({...history.state,system:id},'');
+    requestAnimationFrame(()=>dispatchEvent(new Event('resize')));
+  };
+  if(workspace){
+    workspace.dataset.enhanced='true';workspace.querySelector('.system-rail').hidden=false;
+    for(const tab of systemTabs)tab.addEventListener('click',()=>{
+      selectSystem(tab.dataset.systemTab,{updateHistory:true});
+      workspace.scrollIntoView({block:'start',behavior:'instant'});
+    });
+    systemSelect.addEventListener('change',()=>selectSystem(systemSelect.value,{updateHistory:true}));
+    tabKeyboard(systemTabs,()=>true);
+    compactSystems.addEventListener('change',()=>{
+      if(document.activeElement?.matches('[data-system-tab], [data-system-select]'))
+        (compactSystems.matches?systemSelect:systemTabs.find(tab=>tab.dataset.systemTab===currentSystem)).focus({preventScroll:true});
+    });
+  }
+
   const projectTabs=[...document.querySelectorAll('[data-project-tab]')];
   const projectPanels=[...document.querySelectorAll('[data-project-panel]')];
   if(projectTabs.length===2&&projectPanels.length===2){
     const projectForHash=()=>{
-      let target;
-      try{target=document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{}
+      const target=hashTarget();
       return target?.closest('[data-project-panel]')?.dataset.projectPanel||'pslv';
     };
     const selectProject=(id,{updateHistory=false,focus=false}={})=>{
@@ -183,13 +228,17 @@
         if(selected&&focus)tab.focus();
       }
       for(const panel of projectPanels)panel.hidden=panel.dataset.projectPanel!==id;
-      if(updateHistory)history.pushState(null,'',`#project-${id}`);
+      if(updateHistory){
+        const hash=id==='pslv'&&currentSystem!=='avionics'?'#'+currentSystem:`#project-${id}`;
+        history.pushState({...history.state,system:currentSystem},'',hash);updateLanguage();
+      }
     };
     for(const tab of projectTabs)tab.addEventListener('click',()=>selectProject(tab.dataset.projectTab,{updateHistory:true}));
     const reconcileProject=()=>{
       selectProject(projectForHash());
-      const target=location.hash?document.getElementById(location.hash.slice(1)):null;
-      if(target?.closest('[data-project-panel]'))requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+      const target=hashTarget(),owner=target?.closest('[data-system]');
+      selectSystem(owner?.dataset.system||(target?(history.state?.system||currentSystem):'avionics'));
+      if(target?.closest('[data-project-panel]'))requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));
     };
     window.addEventListener('hashchange',reconcileProject);
     window.addEventListener('popstate',reconcileProject);
@@ -232,8 +281,6 @@
       const restored=recordPanels.find(panel=>panel.id===history.state?.recordTab)?.id;
       // Page-level anchors retain their category, including on Back / Forward.
       selectRecord(panel?.id||(target?(restored||selected):null)||recordPanels[0].id);
-      // A linked research record must not remain hidden by an earlier filter.
-      if(target?.matches('[data-research-item]')&&target.hidden)target.closest('[data-research-archive]')?.querySelector('form').reset();
       if(panel)requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));
     };
     for(const tab of recordTabs)tab.addEventListener('click',()=>selectRecord(tab.dataset.recordTab,true));
@@ -564,18 +611,48 @@
       count.textContent = t(`${visible} of ${records.length} records`, `${records.length}개 중 ${visible}개 기록`);
       empty.hidden = visible !== 0;
     };
-    topic.addEventListener('change', filter);
-    type.addEventListener('change', filter);
-    search.addEventListener('input', filter);
-    archive.querySelector('form').addEventListener('submit', event => event.preventDefault());
-    archive.querySelector('form').addEventListener('reset', event => {
-      event.preventDefault(); topic.value = 'all'; type.value = 'all'; search.value = ''; filter();
+    const writeFilters=(mode='replaceState',navigate=false)=>{
+      const url=new URL(location.href);
+      for(const [key,value] of [['topic',topic.value],['type',type.value],['q',search.value.trim()]]){
+        if(value&&(key==='q'||value!=='all'))url.searchParams.set(key,value);else url.searchParams.delete(key);
+      }
+      if(navigate)url.hash='research-archive';
+      if(url.href!==location.href)history[mode]({...history.state},'',url);
+      updateLanguage();
+    };
+    const clear=()=>{topic.value='all';type.value='all';search.value='';};
+    const readFilters=()=>{
+      const params=new URLSearchParams(location.search);
+      for(const [control,key] of [[topic,'topic'],[type,'type']]){
+        const value=params.get(key);
+        control.value=[...control.options].some(option=>option.value===value)?value:'all';
+      }
+      search.value=params.get('q')||'';
+      filter();
+      let target;try{target=document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{}
+      // A specific record link takes precedence over incompatible list filters.
+      if(target?.matches('[data-research-item]')&&target.hidden){clear();filter();}
+      writeFilters();
+    };
+    const change=()=>{filter();writeFilters('pushState',true);};
+    topic.addEventListener('change',change);
+    type.addEventListener('change',change);
+    search.addEventListener('input',()=>{filter();writeFilters('replaceState',true);});
+    archive.querySelector('form').addEventListener('submit',event=>event.preventDefault());
+    archive.querySelector('form').addEventListener('reset',event=>{
+      event.preventDefault();clear();filter();writeFilters('pushState',true);
     });
-    filter();
+    addEventListener('popstate',readFilters);
+    addEventListener('hashchange',readFilters);
+    addEventListener('pageshow',readFilters);
+    readFilters();
   }
   const supportForm=document.querySelector('[data-support-form]');
   if(supportForm){
     const draft=document.querySelector('[data-support-draft]');
+    const status=document.querySelector('[data-support-status]');
+    supportForm.addEventListener('input',()=>{draft.hidden=true;draft.removeAttribute('href');status.textContent='';});
+    supportForm.addEventListener('change',()=>{draft.hidden=true;draft.removeAttribute('href');status.textContent='';});
     supportForm.addEventListener('submit',event=>{
       event.preventDefault();
       if(!supportForm.reportValidity())return;
@@ -591,6 +668,7 @@
       ].join('\n');
       draft.href=`${supportForm.getAttribute('action')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       draft.hidden=false;
+      status.textContent=t('Draft ready. Open your email app to review and send.','초안이 준비되었습니다. 이메일 앱에서 확인하고 보내세요.');
       draft.focus();
     });
   }

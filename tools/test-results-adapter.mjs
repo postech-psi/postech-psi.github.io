@@ -47,7 +47,7 @@ export function adaptController(source){
  const chartStart=source.indexOf('          <div class="panel comparison-layout">',detailStart);
  const chartEnd=source.indexOf('\n        </section>',chartStart);
  if(chartStart<0||chartEnd<0)throw Error('Missing upstream detail chart boundaries');
- const chartMarkup=source.slice(chartStart,chartEnd).split('\n').filter(line=>!line.includes('class="chart-source"')&&!line.includes('common.metricsRealNote')).join('\n');
+ const chartMarkup=source.slice(chartStart,chartEnd).split('\n').filter(line=>!line.includes('class="chart-source"')&&!line.includes('common.metricsRealNote')&&!line.includes('class="hint-chip"')).join('\n');
  source=replaceFunction(source,'renderDetail',[
    '  function renderDetail(test) {',
    '    if (!test) { renderError(); return; }',
@@ -89,6 +89,10 @@ export function adaptStyles(source){
  return source.replace(/@font-face\s*\{[^}]+\}/,'').replaceAll(':root',':host').replaceAll('body[data-theme="dark"]',':host([data-theme="dark"])').replace(/\bbody\b/g,'.results-body')+`
 /* Scoped mounting layout only; graph styles above are upstream. */
 :host { display:block; min-width:0; font-family:var(--font-sans); }
+:host, :host([data-theme="dark"]) { --radius:0px; --radius-sm:0px; --shadow:none; --shadow-soft:none; }
+.panel.comparison-layout { border:0; padding:0; gap:16px; background:transparent; }
+.chart-header__note { font-size:14px; }
+.tablist button { min-height:44px; }
 .results-body { min-height:0; }
 .site-shell { width:100%; margin:0; }
 .section { margin:0; padding:24px 0; }

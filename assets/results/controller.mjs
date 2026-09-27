@@ -958,7 +958,6 @@ export async function createController(host, PAGE, catalogInput) {
                   <div class="chart-header__note">${copy("common.chartHint")}</div>
                 </div>
                 <div class="chart-shell">
-                  <div class="hint-chip">${copy("common.chartHint")}</div>
                   <div class="chart-canvas" id="dt-canvas-${tab}"></div>
                 </div>
               </div>`;

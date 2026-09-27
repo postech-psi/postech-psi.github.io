@@ -28,6 +28,8 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   assert.equal(await page.locator('[data-system="tms"] a[href="https://postech-psi.github.io/test-results/"]').count(),1,'One discreet portal link');
   assert.equal(await page.locator('[data-results-fallback]').isVisible(),false,'Fallback is hidden once charts are ready');
   assert.equal(await page.locator('#dt-canvas-thrust canvas').count(),1);
+  assert.equal(await page.locator('[data-results-detail] .hint-chip').count(),0,'Chart instructions appear once above the plot, never over the data');
+  assert.equal(await page.locator('[data-results-detail] .panel').evaluate(el=>getComputedStyle(el).borderRadius),'0px','Results shell shares the square editorial frame');
   assert.equal(await page.locator('.site-header').count(),1,'results preserve PSI chrome');
   const chart=async(id)=>page.locator('#'+id).evaluate(el=>{const o=echarts.getInstanceByDom(el).getOption();return {series:o.series.map(s=>({name:s.name,data:s.data})),font:o.textStyle.fontFamily,animation:o.animation,zoom:o.dataZoom,legend:o.legend};});
   const original=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});

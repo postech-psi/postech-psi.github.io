@@ -15,7 +15,11 @@ const { checkSimpleNavigation } = require('./check-simple-navigation.cjs');
 const { checkSupporters } = require('./check-supporters.cjs');
 const { checkSupportContact } = require('./check-support-contact.cjs');
 const { checkReviewFollowups } = require('./check-review-followups.cjs');
+const { checkLayoutRefinement } = require('./check-layout-refinement.cjs');
 const { checkCopy } = require('./check-copy.cjs');
+const { checkSiteRefinement } = require('./check-site-refinement.cjs');
+const { checkInformationDesign } = require('./check-information-design.cjs');
+const { checkPhotoLayout } = require('./check-photo-layout.cjs');
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 (async () => {
   const {routes}=await import('./content.mjs');
@@ -24,6 +28,10 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
   const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
   const errors = [];
   try {
+    await checkInformationDesign(browser);
+    await checkSiteRefinement(browser);
+    await checkPhotoLayout(browser);
+    await checkLayoutRefinement(browser);
     await checkReviewFollowups(browser);
     await checkSimpleNavigation(browser);
     await checkReel(browser);
@@ -81,8 +89,8 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > 0.2, {timeout:15000});
     assert.ok(await page.locator('[data-flight-video]').evaluate(el => el.muted && el.controls),'Selected onboard video starts muted with native controls');
     await page.locator('[data-flight-video]').evaluate(video => video.pause());
-    await page.locator('[data-hardware="electronics"]').click();
-    assert.equal(await page.locator('[data-hardware="electronics"]').getAttribute('aria-selected'),'true');
+    await page.locator('[data-system-select]').selectOption('avionics');
+    assert.ok(await page.locator('[data-system="avionics"] [data-architecture-flow]').isVisible());
     for (const width of [320,390,768,1440]) {
       await page.setViewportSize({width,height:1000});
       for (const lang of ['', 'ko/']) for (const route of routes) {

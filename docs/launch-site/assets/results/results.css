@@ -1503,6 +1503,10 @@ tbody tr:last-child th {
 
 /* Scoped mounting layout only; graph styles above are upstream. */
 :host { display:block; min-width:0; font-family:var(--font-sans); }
+:host, :host([data-theme="dark"]) { --radius:0px; --radius-sm:0px; --shadow:none; --shadow-soft:none; }
+.panel.comparison-layout { border:0; padding:0; gap:16px; background:transparent; }
+.chart-header__note { font-size:14px; }
+.tablist button { min-height:44px; }
 .results-body { min-height:0; }
 .site-shell { width:100%; margin:0; }
 .section { margin:0; padding:24px 0; }

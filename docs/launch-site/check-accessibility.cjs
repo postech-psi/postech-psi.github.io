@@ -10,7 +10,7 @@ async function checkAccessibility(page) {
     await page.goto(`${base}/${locale}index.html`);
     for (const theme of ['light', 'dark']) {
       await setTheme(page,theme);
-      const ratios = await page.locator('.testing-feature .testing-intro>div:last-child').evaluate(caption => {
+      const ratios = await page.locator('.home-support').evaluate(caption => {
         const parse = value => (value.match(/[\d.]+/g) || []).map(Number);
         const luminance = rgb => rgb.slice(0, 3).map(channel => {
           const c = channel / 255;
@@ -28,12 +28,12 @@ async function checkAccessibility(page) {
           const b = luminance(background || [255, 255, 255]);
           return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
         };
-        return { caption: ratio(caption), links: [...caption.querySelectorAll('a')].map(ratio) };
+        return { caption: ratio(caption.querySelector('p')), links: [...caption.querySelectorAll('a')].map(ratio) };
       });
       const minimumLink = Math.min(...ratios.links);
       evidence.push(`${locale || 'en/'} ${theme}: caption ${ratios.caption.toFixed(2)}:1, links ${minimumLink.toFixed(2)}:1`);
-      if (ratios.caption < 4.5) failures.push(`${locale || 'en/'} ${theme}: test caption contrast ${ratios.caption.toFixed(2)}:1 is below 4.5:1`);
-      if (minimumLink < 4.5) failures.push(`${locale || 'en/'} ${theme}: test graph link contrast ${minimumLink.toFixed(2)}:1 is below 4.5:1`);
+      if (ratios.caption < 4.5) failures.push(`${locale || 'en/'} ${theme}: support caption contrast ${ratios.caption.toFixed(2)}:1 is below 4.5:1`);
+      if (minimumLink < 4.5) failures.push(`${locale || 'en/'} ${theme}: support link contrast ${minimumLink.toFixed(2)}:1 is below 4.5:1`);
     }
     await page.goto(`${base}/${locale}pslv.html`);
     for (const view of ['pad', 'onboard']) {
@@ -57,7 +57,7 @@ async function checkAccessibility(page) {
   }
   console.log(evidence.join('\n'));
   assert.deepEqual(failures, [], 'Accessibility regression checks');
-  console.log('PASS: plot caption/link contrast and keyboard video focus/pause in both languages.');
+  console.log('PASS: support caption/link contrast and keyboard video focus/pause in both languages.');
 }
 
 if (require.main === module) {

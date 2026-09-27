@@ -40,7 +40,7 @@ async function checkMotionGallery(browser, only = 'all') {
         await page.goto(`${base}/${locale}index.html`);
         assert.equal(await page.locator('[data-motion-toggle]').count(),1,'Homepage exposes a persistent motion control');
         await page.waitForFunction(()=>document.querySelector('[data-flight-video]').currentTime > .2);
-        assert.ok(await page.locator('.hero-identity').isVisible());
+        assert.ok(await page.locator('.home-identity').isVisible());
         assert.ok(await page.locator('[data-flight-video]').evaluate(v=>v.muted && v.loop && !v.controls));
         const toggle=page.locator('[data-motion-toggle]');
         await toggle.focus();await page.keyboard.press('Enter');await still(page);
@@ -173,7 +173,7 @@ async function checkMotionGallery(browser, only = 'all') {
         try {
           await blocked.addInitScript(()=>{const original=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){if(this.muted)return Promise.reject(new DOMException('Autoplay denied','NotAllowedError'));return original.call(this);};});
           const p=await blocked.newPage();await p.goto(`${base}/${locale}index.html`);await still(p);
-          assert.ok(await p.locator('.hero-identity').isVisible());
+          assert.ok(await p.locator('.home-identity').isVisible());
           await p.locator('[data-media-play]').click();await p.waitForFunction(()=>document.querySelector('[data-flight-video]').currentTime>.2);
           assert.ok(await p.locator('[data-flight-video]').evaluate(v=>v.controls));
         } finally {await blocked.close();}

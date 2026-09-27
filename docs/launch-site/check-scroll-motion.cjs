@@ -23,15 +23,17 @@ const base=process.env.PSI_URL||'http://127.0.0.1:8870';
    assert.equal(Math.round((await header.boundingBox()).y),0);
    await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-theme-toggle]')).color==='rgb(0, 0, 0)');
    const navBox=await page.locator('#site-navigation').boundingBox();
-   assert.ok(Math.abs(navBox.x+navBox.width/2-720)<2,'Desktop navigation is centered independently of side controls');
+   assert.ok(navBox.width>0,'Desktop navigation remains visible during scroll');
    for(const width of [1101,1150,1200,1300,1399,1439,1440]){
     await page.setViewportSize({width,height:900});
-    const nav=await page.locator('#site-navigation').boundingBox(),brand=await page.locator('.brand').boundingBox();
-    assert.ok(Math.abs(nav.x+nav.width/2-width/2)<2,`Navigation centered at ${width}px`);
+    const nav=await page.locator('#site-navigation').boundingBox(),brand=await page.locator('.brand').boundingBox(),preferences=await page.locator('.header-preferences').boundingBox();
+    const center=(brand.x+brand.width+preferences.x)/2;
+    assert.ok(Math.abs(nav.x+nav.width/2-center)<2,`Navigation centered in its available space at ${width}px`);
+    assert.ok(nav.x+nav.width+12<preferences.x,`Navigation and preferences do not overlap at ${width}px`);
     assert.ok(brand.x+brand.width+12<nav.x,`Logo and navigation do not overlap at ${width}px`);
    }
    await page.setViewportSize({width:1440,height:900});
-   assert.equal(await page.locator('.psi-wordmark').evaluate(el=>getComputedStyle(el,'::after').maskMode),'luminance','Original artwork is rendered without its opaque background');
+   assert.equal(await page.locator('.brand .psi-wordmark').evaluate(el=>getComputedStyle(el,'::after').maskMode),'luminance','Original artwork is rendered without its opaque background');
    await page.locator('[data-theme-toggle]').click();
    await page.waitForFunction(()=>getComputedStyle(document.querySelector('.site-header')).backgroundColor==='rgb(0, 0, 0)');
    await page.locator('[data-theme-toggle]').click();

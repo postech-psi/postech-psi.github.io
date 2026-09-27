@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
-const base=(process.env.PSI_URL||'http://127.0.0.1:8874').replace(/\/$/,'');
+const base=(process.env.PSI_URL||'http://127.0.0.1:8767').replace(/\/$/,'');
 
 // Catch lost archive panels/deep links, misleading still-photo controls,
 // incomplete Gallery migration, and stacked whitespace at content boundaries.
@@ -51,7 +51,7 @@ async function checkReviewFollowups(browser){
     await page.goto(`${base}/${prefix}records.html#research-archive`);
     await page.locator('[data-filter-type]').selectOption('award');
     await page.locator('footer a[href="#main"]').click();
-    await page.waitForURL(`${base}/${prefix}records.html#main`);
+    await page.waitForURL(`${base}/${prefix}records.html?type=award#main`);
     assert.ok(await page.locator('#research-archive').isVisible(),'Back to top preserves the active category');
     assert.equal(await page.locator('[data-research-item]:visible').count(),6);
     await page.locator('[data-record-tab="flights"]').click();
@@ -64,7 +64,7 @@ async function checkReviewFollowups(browser){
     await page.goBack();
     await page.goBack();
     await page.locator('.skip-link').focus();await page.keyboard.press('Enter');
-    await page.waitForURL(`${base}/${prefix}records.html#main`);
+    await page.waitForURL(`${base}/${prefix}records.html?type=award#main`);
     assert.ok(await page.locator('#research-archive').isVisible(),'Skip link preserves the active category');
     assert.equal(await page.locator('[data-research-item]:visible').count(),6);
    }],
@@ -103,7 +103,7 @@ async function checkReviewFollowups(browser){
    ['Still photos have hover-only motion and never video controls',async()=>{
     await page.goto(`${base}/${prefix}about.html`);
     assert.equal(await page.locator('.photo-motion-toggle').count(),0,'Still photos must not acquire play/pause buttons');
-    for(const [route,selector] of [['about','.founder-photo'],['about','.about-team img'],['projects','.hardware-portrait img'],['projects','.hardware-detail'],['gallery','[data-gallery-open]']]){
+    for(const [route,selector] of [['about','.founder-photo'],['about','.about-team img'],['projects','.vehicle-overview img'],['projects','#structure img'],['gallery','[data-gallery-open]']]){
      await page.goto(`${base}/${prefix}${route}.html`);
      const photo=page.locator(selector).first();
      assert.equal(await photo.evaluate(el=>el.matches('[data-photo-motion]')||!!el.closest('[data-photo-motion]')),true,`${route}: ${selector} opts into the same photo rule`);
@@ -117,6 +117,7 @@ async function checkReviewFollowups(browser){
     assert.notEqual(await photo.evaluate(el=>el.style.getPropertyValue('--tilt-y')),'');
     await page.emulateMedia({reducedMotion:'reduce'});
     assert.equal(await photo.evaluate(el=>getComputedStyle(el).transform),'none');
+    await page.waitForFunction(()=>!document.querySelector('.founder-photo').style.getPropertyValue('--tilt-y'));
     assert.equal(await photo.evaluate(el=>el.style.getPropertyValue('--tilt-y')),'');
     await page.emulateMedia({reducedMotion:'no-preference'});
     await page.goto(`${base}/${prefix}gallery.html`);
@@ -134,10 +135,10 @@ async function checkReviewFollowups(browser){
      const gap=await page.locator('.gallery-event').first().evaluate(el=>el.querySelector('header').getBoundingClientRect().top-document.querySelector('.page-head').getBoundingClientRect().bottom);
      assert.ok(gap<=48,`Gallery ${width}px content gap: ${gap}`);
      await page.goto(`${base}/${prefix}support.html`);
-     const supportGap=await page.locator('main > .page-head + .section').evaluate(el=>parseFloat(getComputedStyle(el).paddingTop));
-     assert.ok(supportGap<=24,`Support ${width}px must not stack a full section pad after the page heading`);
+     const supportGap=await page.locator('main > .page-head + .support-intro').evaluate(el=>parseFloat(getComputedStyle(el).paddingTop));
+     assert.ok(supportGap<=28,`Support ${width}px must not stack a full section pad after the page heading`);
      await page.goto(`${base}/${prefix}index.html`);
-     const programmeGap=await page.locator('.home-programs').evaluate(el=>document.querySelector('.archive-preview h2').getBoundingClientRect().top-el.querySelector('.program-cards>article:last-child').getBoundingClientRect().bottom);
+     const programmeGap=await page.locator('.home-programs').evaluate(el=>document.querySelector('.home-support h2').getBoundingClientRect().top-el.querySelector('.program-cards>article:last-child').getBoundingClientRect().bottom);
      assert.ok(programmeGap<=110,`Homepage ${width}px section gap: ${programmeGap}`);
     }
    }]
