@@ -20,16 +20,17 @@ async function checkInformationDesign(browser,group=process.env.PSI_DESIGN_GROUP
     assert.ok(footer.privacy.y>=footer.identity.bottom&&Math.abs(footer.privacy.x-footer.postech.x)<1,'Privacy policy sits below and aligns with POSTECH');
    }
   });
-  await check('about',locale+'support is visible first and the laboratory team closes the information page',async()=>{
+  await check('about',locale+'supporters follow the introduction and history sits beneath contact',async()=>{
    for(const width of [1280,390]){
     await page.setViewportSize({width,height:width===390?844:720});await page.goto(`${base}/${locale}about.html`);
     assert.equal(await page.locator('[data-support-primary]').count(),1,'Direct support enquiry must exist');
     const action=page.locator('[data-support-primary]');assert.match(await action.getAttribute('href'),/^mailto:uikangee@postech\.ac\.kr\?subject=/);
-    const r=await action.boundingBox();assert.ok(r.y+r.height<(width===390?844:720),'Support action is visible without scrolling');
+    const r=await page.locator('#supporters-heading').boundingBox();assert.ok(r.y+r.height<(width===390?844:720),'Supporters are visible near the introduction');
     assert.equal(await page.locator('main h1').count(),1);
     assert.equal(await page.locator('.supporter-list li').count(),5);
-    assert.ok(await page.evaluate(()=>document.querySelector('main').lastElementChild.classList.contains('about-team')),'Laboratory photograph is the final main element');
-    assert.ok(await page.evaluate(()=>document.querySelector('#contact').compareDocumentPosition(document.querySelector('.supporter-list'))&Node.DOCUMENT_POSITION_FOLLOWING));
+    assert.ok(await page.evaluate(()=>document.querySelector('main').lastElementChild.classList.contains('about-team')),'The group photograph closes the page');
+    assert.equal(await page.locator('.support-contact .about-founding').count(),1);
+    assert.ok(await page.evaluate(()=>document.querySelector('.supporter-list').compareDocumentPosition(document.querySelector('#participation'))&Node.DOCUMENT_POSITION_FOLLOWING));
     for(const theme of ['light','dark']){
      await page.evaluate(t=>document.documentElement.dataset.theme=t,theme);
      const backgrounds=await page.locator('.supporter-list,.supporter-art').evaluateAll(nodes=>nodes.map(n=>getComputedStyle(n).backgroundColor));
@@ -43,29 +44,13 @@ async function checkInformationDesign(browser,group=process.env.PSI_DESIGN_GROUP
     assert.ok(await page.locator(new URL(page.url()).hash).isVisible());
    }
   });
-  await check('systems',locale+'subsystem selection keeps the reading grid stable and supports history',async()=>{
-   await page.setViewportSize({width:1440,height:1000});await page.goto(`${base}/${locale}projects.html#avionics`);
-   assert.equal(await page.locator('[data-system-tab]').count(),5,'Persistent subsystem navigation must exist');
-   const bounds=()=>page.locator('[data-system][open]').evaluate(n=>{const r=n.getBoundingClientRect();return{x:r.x,width:r.width};});
-   const first=await bounds();assert.ok(await page.locator('.vehicle-overview').isVisible());
-   await page.locator('[data-system-tab="tms"]').click();assert.equal(new URL(page.url()).hash,'#tms');
-   const second=await bounds();assert.ok(Math.abs(first.x-second.x)<1);assert.ok(Math.abs(first.width-second.width)<1);
-   assert.equal(await page.locator('[data-system][open]').count(),1);assert.ok(await page.locator('.vehicle-overview').isVisible());
-   await page.locator('[data-project-tab="aircraft"]').click();
-   await page.locator('[data-project-tab="pslv"]').click();
-   assert.equal(new URL(page.url()).hash,'#tms','Returning to PSLV keeps the selected system in its shareable URL');
-   await page.reload();assert.ok(await page.locator('[data-system="tms"] .system-content').isVisible());
-   await page.locator('[data-language-link]').click();await page.locator('[data-system="tms"] .system-content').waitFor({state:'visible'});assert.ok(await page.locator('[data-system="tms"] .system-content').isVisible());
-   await page.goto(`${base}/${locale}projects.html#avionics`);await page.locator('[data-system-tab="tms"]').click();
-   await page.goBack();assert.equal(await page.locator('[data-system-tab="avionics"]').getAttribute('aria-selected'),'true');
-   await page.goto(`${base}/${locale}projects.html#architecture`);assert.ok(await page.locator('#architecture').isVisible());
-   await page.reload();assert.ok(await page.locator('#architecture').isVisible());
-   assert.ok((await page.locator('[data-language-link]').getAttribute('href')).endsWith('#architecture'));
-   await page.locator('[data-system-tab="avionics"]').focus();await page.keyboard.press('ArrowDown');
-   assert.equal(await page.locator('[data-system-tab="structure"]').getAttribute('aria-selected'),'true');
-   await page.setViewportSize({width:390,height:844});await page.locator('[data-system-select]').selectOption('recovery');
-   assert.equal(new URL(page.url()).hash,'#recovery');assert.ok(await page.locator('[data-system="recovery"] .system-content').isVisible());
-   await page.goto(`${base}/${locale}projects.html#not-a-system`);assert.equal(await page.locator('[data-system][open]').count(),1);
+  await check('systems',locale+'inline engineering retains deep links and surrounding sections',async()=>{
+   for(const anchor of ['avionics','tms','architecture','test-results']){
+    await page.goto(`${base}/${locale}projects.html#${anchor}`);
+    for(const id of ['vehicle','avionics','tms','flights'])assert.ok(await page.locator('#'+id).isVisible());
+    await page.reload();assert.ok(await page.locator('#'+anchor).isVisible());
+    assert.ok((await page.locator('[data-language-link]').getAttribute('href')).endsWith('#'+anchor));
+   }
   });
   await check('home',locale+'Home identity remains visible during playback and support is direct',async()=>{
    await page.setViewportSize({width:1280,height:720});await page.goto(`${base}/${locale}index.html`);

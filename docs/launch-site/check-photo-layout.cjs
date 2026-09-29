@@ -49,9 +49,9 @@ async function checkPhotoLayout(browser){
    });
    await check(locale+'Projects and About photographs are not cropped into fixed-height boxes',async()=>{
     await load(locale+'projects');
-    await natural('.vehicle-overview img');
+    await natural('.project-visual img,.pslv-engineering img');
     await load(locale+'about');
-    await natural('.about-team img,.founder-photo,.join-intro img');
+    await natural('.about-team img,.about-founding img,.about-people img');
    });
    await page.setViewportSize({width:390,height:844});
    await check(locale+'Mobile photos retain their proportions and the page stays within the viewport',async()=>{
@@ -59,7 +59,7 @@ async function checkPhotoLayout(browser){
      await load(locale+route);
      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,route);
      if(route==='gallery')await natural('.event-photos img');
-     if(route==='about')await natural('.about-team img,.founder-photo,.join-intro img');
+     if(route==='about')await natural('.about-team img,.about-founding img,.about-people img');
      if(route==='research')assert.ok(await page.locator('.study-feature').evaluateAll(items=>items.every(item=>item.querySelector('.study-visual').getBoundingClientRect().top<item.querySelector('.study-copy').getBoundingClientRect().top)));
     }
    });

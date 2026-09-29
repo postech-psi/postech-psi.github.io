@@ -12,13 +12,12 @@ function checkCopy() {
     const pslv = read(lang, 'projects');
     const news = read(lang, 'gallery');
     const detailCaption = lang ? '발사 레일에 설치된 PSI 로켓 동체.' : 'The PSI rocket body on the launch rail.';
-    for (const page of [home, pslv, news]) assert.ok(page.includes(detailCaption), 'Rocket close-up has a concrete bilingual description');
+    for (const page of [home, news]) assert.ok(page.includes(detailCaption), 'Rocket close-up has a concrete bilingual description');
     assert.ok(news.includes(lang ? 'PSI 아카이브의 사진입니다.' : 'Photographs from the PSI archive.'));
     assert.ok(!news.includes('archive previews') && !news.includes('미리보기 이미지로 확보'), 'Archive credit excludes acquisition narration');
-    assert.ok(pslv.replace(/\s+/g,' ').includes(lang ? '지상국 표시와 로그 재생' : 'Ground-station displays and playback'), 'Heading covers live displays and recorded playback');
-    for (const fact of ['343', '29.38', '186.632', '45.841', 'PRELAUNCH', 'DEPLOY', '100 Hz', '25 Hz', '50 Hz', '323.79 N', '484.66 N s', '2331.2 ms', '38.018 bar']) assert.ok(pslv.includes(fact), `Retain ${fact}`);
-    assert.match(pslv, lang ? /비행 날짜와 기체는 확인되지/ : /flight date and vehicle are unconfirmed/);
-    assert.match(pslv, lang ? /착륙이나 회수 완료를 확인할 수 없습니다/ : /landing and completed recovery are not established/);
+    for (const fact of ['Portenta H7','GNSS','323.79 N','484.66 N s','2331.2 ms','38.018 bar']) assert.ok(pslv.includes(fact),`Retain essential hardware and measured result: ${fact}`);
+    assert.ok(pslv.includes(lang ? 'GNSS 위치는 별도로 기록합니다' : 'GNSS records position separately'));
+    assert.ok(!pslv.includes('Implementation references')&&!pslv.includes('구현 참고 자료'));
     const about = read(lang, 'about');
     assert.ok(!home.includes('data-program-choice'),'Homepage no longer offers a second project-switch control');
     assert.ok(!about.includes(lang ? '가입과 활동 과정' : 'Joining and participating'));
@@ -30,7 +29,7 @@ function checkCopy() {
     }
     for (const name of ['Uikang Joo', 'Yeonho Kim', 'Taeho Lee', 'Jaeyoung Park', 'Jin-Tae Kim', 'Un-Seong Baik', 'Minsoo Kim', 'President', 'Vice President', 'Secretary', 'Avionics & TMS Lead', 'Faculty advisor']) assert.ok(about.includes(name), `Retain ${name}`);
     assert.ok(about.includes(lang ? '역대 회장' : 'Former presidents'));
-    assert.ok(about.includes(lang ? '재정' : 'Finance'));
+    assert.ok(!about.includes('organisation-table'),'The removed organisation table stays absent');
     const support = about;
     assert.equal((about.match(/class="supporter-list"/g)||[]).length,1,'Combined page has one supporter list');
     for(const file of ['supporter-postech.png','supporter-kai-light.png','supporter-kai-dark.png','supporter-mathworks-light.png','supporter-mathworks-dark.png','supporter-ansys.png'])assert.ok(support.includes(file),'Render official supporter logos on Support');
@@ -42,7 +41,7 @@ function checkCopy() {
     assert.ok(records.includes(lang ? '발사 성공, 회수 실패.' : 'Launch successful, recovery failed.'));
     for (const date of ['2025-08-09', '2025-12-05', '2026-02-06']) assert.ok(records.includes(date));
   }
-  console.log('PASS: bilingual copy cleanup and protected science, people, Finance, dates and uncertainty');
+  console.log('PASS: bilingual copy cleanup and essential engineering, people, dates and research uncertainty');
 }
 if (require.main === module) checkCopy();
 module.exports = {checkCopy};

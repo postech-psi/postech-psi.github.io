@@ -89,13 +89,13 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > 0.2, {timeout:15000});
     assert.ok(await page.locator('[data-flight-video]').evaluate(el => el.muted && el.controls),'Selected onboard video starts muted with native controls');
     await page.locator('[data-flight-video]').evaluate(video => video.pause());
-    await page.locator('[data-system-select]').selectOption('avionics');
-    assert.ok(await page.locator('[data-system="avionics"] [data-architecture-flow]').isVisible());
+    await page.locator('.project-jumps a[href="#avionics"]').click();
+    assert.ok(await page.locator('#avionics .avionics-essentials').isVisible());
     for (const width of [320,390,768,1440]) {
       await page.setViewportSize({width,height:1000});
       for (const lang of ['', 'ko/']) for (const route of routes) {
         await page.goto(`${base}/${lang}${route}.html`);
-        assert.equal(await page.locator('h1').count(),1,`One h1: ${lang}${route}`);
+        assert.equal(await page.locator('main h1:visible').count(),1,`One h1: ${lang}${route}`);
         assert.equal(await page.locator('html').getAttribute('lang'),lang?'ko':'en');
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
         assert.equal(overflow,false,`Overflow at ${width}: ${lang}${route}`);
@@ -109,6 +109,6 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:path.join(__dirname,'qa-mobile.png')});
     assert.deepEqual(errors,[],'Browser errors');
-    console.log(`PASS: ${routes.length*2} bilingual routes; support contact and campus map; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; hardware tabs; font/image loading; browser errors.`);
+    console.log(`PASS: ${routes.length*2} bilingual routes; support contact and campus map; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; inline engineering; font/image loading; browser errors.`);
   } finally { await browser.close(); }
 })().catch(error => { console.error(error);process.exitCode=1; });

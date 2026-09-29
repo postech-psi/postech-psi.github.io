@@ -63,6 +63,7 @@ export async function initTelemetry(root) {
     seek.addEventListener('input',()=>{index=Math.min(samples.length-1,Math.max(0,Number(seek.value)));pause();draw();});
     reset.addEventListener('click',()=>{index=0;pause(t('Reset to the first received sample','첫 수신 샘플로 돌아왔습니다'));draw();});
     document.addEventListener('visibilitychange',()=>{if(document.hidden && playing)pause(t('Paused while the page was hidden','페이지가 보이지 않아 일시 정지했습니다'));});
+    window.addEventListener('psi:projectchange',()=>{if(root.closest('[hidden]')&&playing)pause();});
   } catch {
     status.textContent=t('Interactive playback is unavailable. The recorded plot and summary remain below.','대화형 재생을 불러올 수 없습니다. 아래 기록 그래프와 요약을 확인하세요.');
   }

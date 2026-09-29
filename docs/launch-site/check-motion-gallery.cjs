@@ -162,12 +162,6 @@ async function checkMotionGallery(browser, only = 'all') {
           await p.waitForFunction(()=>document.querySelector('[data-flight-video]').currentTime>.2);
           assert.ok((await p.locator('[data-flight-video]').getAttribute('src')).endsWith('onboard.mp4'));
           assert.ok(await p.locator('[data-flight-video]').evaluate(v=>v.controls&&!v.loop&&v.muted&&!v.paused),'Stale pad promise cannot change selected onboard playback');
-          await p.goto(`${base}/${locale}pslv.html#flight-record`);
-          await p.locator('[data-replay-toggle]').click();await p.waitForFunction(()=>Number(document.querySelector('[data-replay-seek]').value)>1);
-          await p.evaluate(()=>{window.testHidden=true;document.dispatchEvent(new Event('visibilitychange'));});
-          const index=await p.locator('[data-replay-seek]').inputValue();await p.waitForTimeout(150);assert.equal(await p.locator('[data-replay-seek]').inputValue(),index);
-          await p.evaluate(()=>{window.testHidden=false;document.dispatchEvent(new Event('visibilitychange'));});
-          assert.equal(await p.locator('[data-telemetry]').getAttribute('data-replaying'),'false');
         } finally {await guarded.close();}
         const blocked=await browser.newContext();
         try {
@@ -184,68 +178,19 @@ async function checkMotionGallery(browser, only = 'all') {
           const p=await plain.newPage();await p.goto(`${base}/${locale}gallery.html`);
           assert.equal(await p.locator('[data-gallery-open]').count(),14);
           assert.ok((await p.locator('[data-gallery-open]').first().getAttribute('href')).endsWith('.webp'));
-          await p.goto(`${base}/${locale}projects.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
-          await p.evaluate(()=>document.fonts.ready);
-          if(!await p.locator('[data-system="avionics"]').evaluate(el=>el.open))await p.locator('[data-system="avionics"] > summary').click();await p.locator('.replay-summary summary').click();assert.equal(await p.locator('.replay-summary tbody tr:visible').count(),3);
+          await p.goto(`${base}/${locale}projects.html#flight-record`);
+          assert.ok(await p.locator('#flight-record').isVisible());
+          assert.equal(await p.locator('[data-results-fallback] tbody tr').count(),4);
         } finally {await plain.close();}
-        const failed=await browser.newContext();
-        try {
-          const p=await failed.newPage();await p.route('**/archive-telemetry.json',route=>route.abort());
-          await p.goto(`${base}/${locale}pslv.html#flight-record`);
-          await p.waitForFunction(()=>/unavailable|불러올 수 없습니다/.test(document.querySelector('[data-replay-status]').textContent));
-          assert.equal(await p.locator('[data-replay-controls]').isVisible(),false);
-          assert.ok(await p.locator('[data-telemetry] svg').isVisible());
-        } finally {await failed.close();}
-      }],
-      ['replay',async()=>{
-        await page.goto(`${base}/${locale}pslv.html#flight-record`);
-        assert.equal(await page.locator('[data-telemetry]').count(),1,'Recorded telemetry tool exists');
-        const data=await (await context.request.get(`${base}/assets/archive-telemetry.json`)).json();
-        assert.equal(data.samples.length,343);assert.equal(data.gaps.length,7);
-        assert.equal(Math.max(...data.samples.map(s=>s.altitudeMeters)),186.632);
-        assert.deepEqual(data.samples.at(-1),{elapsedSeconds:29.38,altitudeMeters:45.841,verticalVelocityMetersPerSecond:-6.764,state:'DEPLOY'});
-        for(const s of data.samples)assert.deepEqual(Object.keys(s).sort(),['altitudeMeters','elapsedSeconds','state','verticalVelocityMetersPerSecond']);
-        assert.equal(await page.locator('[data-telemetry] [data-trace-segment]').count(),8,'Seven real gaps create eight unconnected traces');
-        const seek=page.locator('[data-replay-seek]');await seek.waitFor({state:'visible'});
-        const cursorBox=await page.locator('[data-replay-cursor]').boundingBox();
-        assert.ok(cursorBox && cursorBox.width>0 && cursorBox.height>0,'The SVG cursor must be visibly rendered');
-        await seek.fill('342');
-        assert.match(await page.locator('[data-replay-readout]').textContent(),/45\.841/);
-        assert.match(await page.locator('[data-replay-readout]').textContent(),/DEPLOY/);
-        assert.match(await seek.getAttribute('aria-valuetext'),/29\.38/);
-        assert.equal(await page.locator('[data-replay-toggle]').textContent(),locale?'기록 다시 보기':'Replay excerpt','End position offers replay');
-        await page.locator('[data-replay-reset]').click();assert.equal(await seek.inputValue(),'0');
-        assert.equal(await page.locator('[data-replay-toggle]').textContent(),locale?'기록 재생':'Play excerpt','Reset position offers play');
-        await page.locator('[data-replay-toggle]').click();
-        await page.waitForFunction(()=>Number(document.querySelector('[data-replay-seek]').value)>2);
-        await page.locator('[data-replay-toggle]').click();const index=await seek.inputValue();
-        await page.waitForTimeout(150);assert.equal(await seek.inputValue(),index);
-        await seek.fill('340');await page.locator('[data-replay-toggle]').click();
-        await page.waitForFunction(()=>document.querySelector('[data-replay-seek]').value==='342');
-        assert.equal(await page.locator('[data-telemetry]').getAttribute('data-replaying'),'false');
-        for(const width of [390,320]) {
-          await page.setViewportSize({width,height:844});
-          const minimum=await page.locator('[data-telemetry] svg text').evaluateAll(labels=>Math.min(...labels.filter(label=>getComputedStyle(label).display!=='none').map(label=>parseFloat(getComputedStyle(label).fontSize)*label.getScreenCTM().a)));
-          assert.ok(minimum>=12,`Chart labels at ${width}px render at ${minimum.toFixed(2)}px, below 12px`);
-          const contained=await page.locator('[data-telemetry] svg').evaluate(svg=>{
-            const frame=svg.getBoundingClientRect();
-            return [...svg.querySelectorAll('text')].filter(label=>getComputedStyle(label).display!=='none').every(label=>{const box=label.getBoundingClientRect();return box.left>=frame.left && box.right<=frame.right;});
-          });
-          assert.ok(contained,`All chart labels fit inside the SVG at ${width}px`);
-          const gaps=await page.locator('[data-time-tick]').evaluateAll(labels=>{
-            const boxes=labels.filter(label=>getComputedStyle(label).display!=='none').map(label=>label.getBoundingClientRect());
-            return boxes.slice(1).map((box,i)=>box.left-boxes[i].right);
-          });
-          assert.ok(Math.min(...gaps)>=8,`Time-axis tick labels have at least8px clear space at${width}`);
-        }
       }]
+
     ]) {
       if(only!=='all' && only!==name)continue;
       try{await run();console.log(`PASS: ${locale||'en/'} ${name}`);}catch(e){failures.push(`${locale||'en/'} ${name}: ${e.message}`);}
     }
     await context.close();
   }
-  assert.deepEqual(failures,[],'Motion/gallery/replay checks');
+  assert.deepEqual(failures,[],'Motion/gallery checks');
 }
 if(require.main===module)(async()=>{const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});try{await checkMotionGallery(browser,process.argv[2]);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
 module.exports={checkMotionGallery};

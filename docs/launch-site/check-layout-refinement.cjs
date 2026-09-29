@@ -23,7 +23,8 @@ async function checkLayoutRefinement(browser){
    for(const name of ['Uikang Joo','Yeonho Kim','Taeho Lee','Jaeyoung Park','Jin-Tae Kim'])assert.ok((await page.locator('.leadership').innerText()).includes(name));
    const former=page.locator('.leadership details');assert.equal(await former.getAttribute('open'),null);
    await former.locator('summary').focus();await page.keyboard.press('Enter');assert.ok((await former.innerText()).includes('Un-Seong Baik'));
-   assert.equal(await page.locator('.channel-grid a').count(),3);
+   assert.equal(await page.locator('.channel-grid a').count(),0);
+   assert.equal(await page.locator('.footer-channels a').count(),3);
    assert.equal(await page.locator('.channel-grid a[href="mailto:uikangee@postech.ac.kr"]').count(),0);
   });
   await check('Footer stays unified and brand assets remain sharp at larger sizes',async()=>{
@@ -70,7 +71,7 @@ async function checkLayoutRefinement(browser){
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
   });
   await check('Redundant shortcuts are absent while source and navigation links remain',async()=>{
-   const removed=/Earlier conference work and awards|Watch the field and onboard films|Explore the vehicle|Flight history|Photographs from launch day|이전 학회 발표와 수상 기록|발사대·탑재 영상 보기|비행체 살펴보기|비행 기록$|발사일 사진 보기/;
+   const removed=/Earlier conference work and awards|Watch the field and onboard films|Explore the vehicle|Flight history|Photographs from launch day|이전 학회 발표와 수상 기록|발사대·탑재 영상 보기|비행체 살펴보기|^비행 기록$|발사일 사진 보기/;
    for(const route of ['research','projects','gallery']){
     await page.goto(`${base}/${locale}${route}.html`);
     const links=await page.locator('a:visible').allTextContents();assert.ok(!links.some(text=>removed.test(text.trim())),`${route} omits promotional jump links`);

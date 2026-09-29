@@ -65,15 +65,13 @@ async function checkCurrentContent(browser) {
         assert.ok((await first.locator('figure').boundingBox()).y<792,'A substantial research visual begins in the first viewport');
         assert.ok(await first.locator('.current-stage').isVisible(),'Stage is visible without expanding details');
       });
-      await check(`${locale || 'en/'} current Avionics responsibilities and pinned versions are delivered`, async () => {
+      await check(`${locale || 'en/'} essential Avionics and pinned combustion data are delivered`, async () => {
         await page.goto(`${base}/${locale}pslv.html#avionics`);
         const avionics = page.locator('#main');
         const text = await avionics.textContent();
-        assert.match(text,/M7/); assert.match(text,/M4/);
-        assert.match(text,/100\s?Hz/); assert.match(text,/50\s?Hz/); assert.match(text,/25\s?Hz/);
-        assert.match(text,/integrated|통합/);
-        assert.doesNotMatch(text,/three.axis acceleration plots|three separate windows|three.window|3D 자세 모델과 비행 상태, GNSS 기반 경로, 3축 가속도 그래프/);
-        assert.ok(await avionics.locator('a[href*="7cfb5be044e539c2e3c6d79a6538416a2741cd67"]').count()>0,'Current source is pinned');
+        assert.match(text,/Portenta H7/);assert.match(text,/GNSS/);
+        assert.equal(await avionics.locator('.avionics-essentials>div').count(),3);
+        assert.equal(await avionics.locator('#avionics a').getAttribute('href'),'https://github.com/postech-psi/Avionics');
         await page.goto(`${base}/${locale}pslv.html#tms`);
         const resultsLock=await page.request.get(`${base}/assets/results/source-lock.json`).then(response=>response.json());
         assert.equal(resultsLock.revision,'11df0dc525da7113dd504e363662f59498e2a587','Original results implementation and datasets remain pinned');

@@ -44,26 +44,20 @@ async function checkSimpleNavigation(browser){
   await page.setViewportSize({width:1440,height:1000});
   await page.goto(`${base}/${prefix}pslv.html`);
   assert.equal(await page.locator('.site-nav > a, .nav-projects > a').count(),5,'Five destinations include combined About and Support');
-  assert.equal(await page.locator('h1').count(),1);
-  assert.equal(await page.locator('[data-system][open]').count(),1,'Avionics is selected by default');
+  assert.equal(await page.locator('main h1:visible').count(),1);
   const originalPath=new URL(page.url()).pathname;
-  await page.locator('[data-system-tab="avionics"]').click();
+  await page.locator('.project-jumps a[href="#avionics"]').click();
   assert.equal(new URL(page.url()).pathname,originalPath);
-  assert.ok(await page.locator('[data-system="avionics"] [data-architecture-flow]').isVisible());
-  assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.getAnimations().length),0,'Selection does not animate or resize the reading column');
-  await page.locator('[data-system-tab="tms"]').click();
+  assert.ok(await page.locator('#architecture').isVisible());
+  await page.locator('.project-jumps a[href="#tms"]').click();
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
   await page.locator('#dt-canvas-thrust canvas').waitFor({state:'visible'});
   assert.ok((await page.locator('#dt-canvas-thrust canvas').boundingBox()).width>100);
-  assert.ok(await page.locator('#dt-canvas-thrust canvas').isVisible());
-  await page.waitForFunction(()=>document.querySelectorAll('[data-system][open]').length===1);
-  assert.equal(await page.locator('[data-system][open]').count(),1,'One focal system stays open');
-  const avionics=page.locator('[data-system-tab="avionics"]');
-  await avionics.focus();await page.keyboard.press('Enter');await page.keyboard.press('Space');await page.keyboard.press('Enter');
+  assert.ok(await page.locator('#avionics').isVisible(),'Scrolling to results keeps Avionics in the document');
+  const avionics=page.locator('.project-jumps a[href="#avionics"]');
+  await avionics.focus();await page.keyboard.press('Enter');
   await page.setViewportSize({width:390,height:844});
-  await page.waitForFunction(()=>document.querySelectorAll('[data-system][open]').length===1&&document.querySelector('[data-system="avionics"]').open);
-  assert.equal(await page.locator('[data-system][open]').getAttribute('data-system'),'avionics','Repeated keyboard selection retains the selected system');
-  assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.style.height),'','Resize does not leave a fixed clipping height');
+  assert.equal(await page.locator('#avionics').evaluate(el=>el.style.height),'','Resize does not clip the section');
   await page.locator('[data-theme-toggle]').click();
   assert.ok(await page.locator('[data-theme-toggle]').evaluate(el=>el.getAnimations().length>0));
   await page.locator('[data-menu-toggle]').click();
@@ -91,24 +85,24 @@ async function checkSimpleNavigation(browser){
    assert.equal(await page.locator('a[href]').evaluateAll(as=>as.filter(a=>/^(avionics|tms|news|join|learning)\.html/.test(a.getAttribute('href'))).length),0,`${route} exposes only canonical destinations`);
   }
   await page.goto(`${base}/${prefix}projects.html`);
-  assert.equal(await page.locator('main h1').count(),1);
+  assert.equal(await page.locator('main h1:visible').count(),1);
   await page.locator('[data-project-tab="aircraft"]').click();
   assert.ok(await page.locator('[data-project-panel="aircraft"]').isVisible());
   assert.equal(await page.locator('[data-project-panel="pslv"]').isVisible(),false);
  }
  await page.emulateMedia({reducedMotion:'reduce'});await page.goto(base+'/pslv.html');
- await page.locator('[data-system-tab="avionics"]').click();
+ await page.locator('.project-jumps a[href="#avionics"]').click();
  assert.ok(await page.locator('#architecture').isVisible());
- assert.equal(await page.locator('[data-system="avionics"]').evaluate(el=>el.getAnimations().length),0);
+ assert.equal(await page.locator('#avionics').evaluate(el=>el.getAnimations().length),0);
  await page.locator('[data-theme-toggle]').click();assert.equal(await page.locator('[data-theme-toggle]').evaluate(el=>el.getAnimations().length),0);
  const nojs=await browser.newContext({javaScriptEnabled:false});const fallback=await nojs.newPage();
  await fallback.goto(base+'/projects.html');
  assert.equal(await fallback.locator('[data-project-panel]:visible').count(),2);
- assert.equal(await fallback.locator('main h1').count(),1);
- await fallback.locator('[data-system="tms"] > summary').click();
+ assert.equal(await fallback.locator('main h1').count(),2);
+ await fallback.locator('.project-jumps a[href="#tms"]').click();
  assert.ok(await fallback.locator('[data-results-fallback]').isVisible());
  await nojs.close();
- console.log('PASS simple navigation: bilingual canonical routes, native engineering disclosures, original charts, compatibility deep links, Gallery photos, About participation, project switch and reduced motion');
+ console.log('PASS simple navigation: bilingual canonical routes, continuous engineering sections, original charts, compatibility deep links, Gallery photos, About participation, project switch and reduced motion');
  }finally{await page.close();}
 }
 module.exports={checkSimpleNavigation};

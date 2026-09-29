@@ -169,77 +169,52 @@
   menuBreakpoint.addEventListener('change', () => {setMenu(false);setProjectMenu(false);});
   window.addEventListener('pageshow', () => {setMenu(false);setProjectMenu(false);});
 
-  // The project and subsystem share one URL reconciliation path. Reveal content
-  // synchronously before the single scheduled deep-link scroll.
+  // Each programme is a continuous page. Chapter links scroll within it.
   const hashTarget=()=>{try{return document.getElementById(decodeURIComponent(location.hash.slice(1)));}catch{return null;}};
-  const workspace=document.querySelector('[data-system-workspace]');
-  const systemTabs=[...document.querySelectorAll('[data-system-tab]')];
-  const systems=[...document.querySelectorAll('[data-system]')];
-  const systemSelect=document.querySelector('[data-system-select]');
-  const compactSystems=matchMedia('(max-width:750px)');
-  let currentSystem='avionics';
-  const selectSystem=(id,{updateHistory=false}={})=>{
-    if(!workspace)return;
-    if(!systems.some(panel=>panel.dataset.system===id))id='avionics';
-    const focusedPanel=document.activeElement?.closest('[data-system]');
-    currentSystem=id;
-    for(const tab of systemTabs){const selected=tab.dataset.systemTab===id;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;}
-    for(const panel of systems){
-      const selected=panel.dataset.system===id;
-      panel.open=selected;panel.hidden=!selected;
-      panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','system-tab-'+panel.dataset.system);
-      panel.tabIndex=0;
-    }
-    systemSelect.value=id;
-    if(focusedPanel&&focusedPanel.dataset.system!==id){
-      (compactSystems.matches?systemSelect:systemTabs.find(tab=>tab.dataset.systemTab===id)).focus({preventScroll:true});
-    }
-    if(updateHistory&&location.hash!=='#'+id){
-      history.pushState({...history.state,system:id},'','#'+id);updateLanguage();
-    }else history.replaceState({...history.state,system:id},'');
-    requestAnimationFrame(()=>dispatchEvent(new Event('resize')));
-  };
-  if(workspace){
-    workspace.dataset.enhanced='true';workspace.querySelector('.system-rail').hidden=false;
-    for(const tab of systemTabs)tab.addEventListener('click',()=>{
-      selectSystem(tab.dataset.systemTab,{updateHistory:true});
-      workspace.scrollIntoView({block:'start',behavior:'instant'});
-    });
-    systemSelect.addEventListener('change',()=>selectSystem(systemSelect.value,{updateHistory:true}));
-    tabKeyboard(systemTabs,()=>true);
-    compactSystems.addEventListener('change',()=>{
-      if(document.activeElement?.matches('[data-system-tab], [data-system-select]'))
-        (compactSystems.matches?systemSelect:systemTabs.find(tab=>tab.dataset.systemTab===currentSystem)).focus({preventScroll:true});
-    });
-  }
-
   const projectTabs=[...document.querySelectorAll('[data-project-tab]')];
   const projectPanels=[...document.querySelectorAll('[data-project-panel]')];
   if(projectTabs.length===2&&projectPanels.length===2){
-    const projectForHash=()=>{
-      const target=hashTarget();
-      return target?.closest('[data-project-panel]')?.dataset.projectPanel||'pslv';
-    };
-    const selectProject=(id,{updateHistory=false,focus=false}={})=>{
+    const projectNavigation=document.querySelector('.project-navigation');
+    const backToTop=document.querySelector('.site-footer a[href="#main"]');
+    let scrollFrame;
+    const reconcileProject=()=>{
+      const target=hashTarget()||(!location.hash&&new URLSearchParams(location.search).has('test')?document.getElementById('test-results'):null);
+      const selected=projectTabs.find(tab=>tab.getAttribute('aria-selected')==='true')?.dataset.projectTab;
+      const id=target?.closest('[data-project-panel]')?.dataset.projectPanel||(target?.id==='main'?selected:null)||'pslv';
       for(const tab of projectTabs){
         const selected=tab.dataset.projectTab===id;
         tab.setAttribute('aria-selected',String(selected));
         tab.tabIndex=selected?0:-1;
-        if(selected&&focus)tab.focus();
       }
       for(const panel of projectPanels)panel.hidden=panel.dataset.projectPanel!==id;
-      if(updateHistory){
-        const hash=id==='pslv'&&currentSystem!=='avionics'?'#'+currentSystem:`#project-${id}`;
-        history.pushState({...history.state,system:currentSystem},'',hash);updateLanguage();
+      if(backToTop)backToTop.href=`#project-${id}`;
+      // Changing programmes must not leave focus or playback hidden.
+      if(document.activeElement?.closest('[hidden]')){
+        const activePanel=projectPanels.find(panel=>!panel.hidden);
+        activePanel?.querySelector('h1')?.focus({preventScroll:true});
       }
+      document.querySelectorAll('[data-project-panel] video').forEach(video=>{if(video.closest('[hidden]'))video.pause();});
+      for(let node=target;node;node=node.parentElement){if(node.tagName==='DETAILS')node.open=true;}
+      dispatchEvent(new CustomEvent('psi:projectchange',{detail:{project:id}}));
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame=requestAnimationFrame(()=>{
+        dispatchEvent(new Event('resize'));
+        if(target?.closest('[data-project-panel]')){
+          const projectStart=target.matches('[data-project-panel],#vehicle');
+          (projectStart?projectNavigation:target)?.scrollIntoView({block:'start',behavior:'instant'});
+        }
+      });
     };
-    for(const tab of projectTabs)tab.addEventListener('click',()=>selectProject(tab.dataset.projectTab,{updateHistory:true}));
-    const reconcileProject=()=>{
-      selectProject(projectForHash());
-      const target=hashTarget(),owner=target?.closest('[data-system]');
-      selectSystem(owner?.dataset.system||(target?(history.state?.system||currentSystem):'avionics'));
-      if(target?.closest('[data-project-panel]'))requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));
-    };
+    for(const tab of projectTabs){
+      tab.addEventListener('click',event=>{
+        if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+        event.preventDefault();
+        const hash=`#project-${tab.dataset.projectTab}`;
+        if(location.hash!==hash)history.pushState(history.state,'',hash);
+        updateLanguage();reconcileProject();
+      });
+      tab.addEventListener('keydown',event=>{if(event.key===' '){event.preventDefault();tab.click();}});
+    }
     window.addEventListener('hashchange',reconcileProject);
     window.addEventListener('popstate',reconcileProject);
     window.addEventListener('pageshow',reconcileProject);

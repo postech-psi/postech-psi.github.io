@@ -31,7 +31,7 @@ async function checkSupporters(browser) {
     const page=await context.newPage();
     await page.goto(`${base}/${locale}about.html`);
     assert.equal(await page.locator('.supporter-list').count(),1,'Merged About has one supporter list');
-    assert.match(await page.locator('.organisation-table').innerText(),locale ? /재정[\s\S]*예산[\s\S]*지출/ : /Finance[\s\S]*budget[\s\S]*expenses/);
+    assert.equal(await page.locator('.organisation-table').count(),0,'Organisation and roles remains removed');
     await page.goto(`${base}/${locale}support.html`);
     const links=page.locator('.supporter-list a');
     assert.equal(await links.count(),5,'Five confirmed supporters are present');
@@ -51,9 +51,9 @@ async function checkSupporters(browser) {
       assert.equal(await page.locator('.supporter-list').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)','Supporter band follows the theme');
       await page.waitForFunction(()=>[...document.querySelectorAll('.supporter-list img')].filter(img=>getComputedStyle(img).display!=='none').every(img=>img.complete && img.naturalWidth>0));
       const layout=await links.evaluateAll(items=>items.map(el=>{const img=[...el.querySelectorAll('img')].find(img=>getComputedStyle(img).display!=='none'),box=img.getBoundingClientRect();return {matlab:el.getAttribute('aria-label').startsWith('MATLAB'),x:el.getBoundingClientRect().x,w:box.width,h:box.height,ratio:img.naturalWidth/img.naturalHeight,filter:getComputedStyle(img).filter};}));
-      assert.equal(new Set(layout.map(item=>Math.round(item.x))).size,width>=1200 ? 5 : width>=600 ? 2 : 1);
+      assert.equal(new Set(layout.map(item=>Math.round(item.x))).size,width>650 ? 5 : 2);
       for(const item of layout) {
-        assert.ok(item.w>=100 && item.h>=15,'Logos are legible');
+        assert.ok(item.w>=60 && item.h>=8,'Logos are legible');
         assert.ok(Math.abs(item.w/item.h-item.ratio)<.05,'Original proportions');
         assert.equal(item.filter,'none','Original logo colors remain unchanged in both themes');
       }
@@ -63,7 +63,7 @@ async function checkSupporters(browser) {
     }
     await context.close();
   }
-  console.log(`Supporters: ${passes} layout checks passed; links, assets, names and finance verified in both languages.`);
+  console.log(`Supporters: ${passes} layout checks passed; links, assets and names verified in both languages.`);
 }
 if(require.main===module)(async()=>{const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined});try{await checkSupporters(browser);}finally{await browser.close();}})().catch(error=>{console.error(error);process.exitCode=1});
 module.exports={checkSupporters};

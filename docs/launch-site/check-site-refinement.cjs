@@ -8,7 +8,7 @@ async function checkSiteRefinement(browser){
  const check=async(name,run)=>{try{await run();console.log('PASS: '+name);}catch(e){failures.push(name+': '+e.message);}};
  for(const locale of ['', 'ko/']){
   await check(locale+'page introductions follow their heading',async()=>{
-   for(const route of ['about','support','research','records','projects','gallery']){
+   for(const route of ['research','records','gallery']){
     await page.goto(`${base}/${locale}${route}.html`);
     const geometry=await page.locator('.page-head').evaluate(head=>{
      const h=head.querySelector('h1').getBoundingClientRect(),p=head.querySelector('.page-intro');

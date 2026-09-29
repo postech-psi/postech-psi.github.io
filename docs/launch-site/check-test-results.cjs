@@ -24,8 +24,8 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
   assert.deepEqual(fontRequests,['/psi-website/assets/Pretendard.woff2'],'charts reuse the already-loaded document Pretendard font without a duplicate font download');
   assert.equal(await page.locator('[data-results-comparison]').count(),0,'Combustion tests show only the selected original detail chart');
-  assert.equal(await page.locator('[data-system="tms"] .case-head,[data-system="tms"] .processing-steps,[data-results-detail] .detail-hero,[data-results-detail] .detail-grid,[data-results-detail] .chart-source').count(),0,'No duplicate portal narrative or conditions');
-  assert.equal(await page.locator('[data-system="tms"] a[href="https://postech-psi.github.io/test-results/"]').count(),1,'One discreet portal link');
+  assert.equal(await page.locator('#tms .processing-steps,[data-results-detail] .detail-hero,[data-results-detail] .detail-grid,[data-results-detail] .chart-source').count(),0,'No duplicate portal narrative or conditions');
+  assert.equal(await page.locator('#tms a[href="https://github.com/postech-psi/TMS"]').count(),1,'One main TMS repository link');
   assert.equal(await page.locator('[data-results-fallback]').isVisible(),false,'Fallback is hidden once charts are ready');
   assert.equal(await page.locator('#dt-canvas-thrust canvas').count(),1);
   assert.equal(await page.locator('[data-results-detail] .hint-chip').count(),0,'Chart instructions appear once above the plot, never over the data');
@@ -80,7 +80,7 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   await page.unroute('**/tms_5_pipeline_data.txt');
   await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));assert.equal(await page.locator('#dt-canvas-thrust').count(),0,'page teardown disposes charts');
   const broken=await browser.newPage();await broken.route('**/controller.mjs*',r=>r.abort());await broken.goto(base+'pslv.html#tms');await broken.locator('[data-results-retry]').waitFor();assert.equal(await broken.locator('.site-header').count(),1);assert.equal(await broken.locator('[data-results-fallback] tbody tr').count(),4);await broken.unroute('**/controller.mjs*');await broken.locator('[data-results-retry]').click();await broken.locator('[data-results-status="ready"]').waitFor({state:'attached',timeout:5000});await broken.close();
-  const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'pslv.html');await nojs.locator('[data-system="tms"] > summary').click();assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
+  const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'pslv.html');await nojs.waitForURL(base+'projects.html#project-pslv');await nojs.locator('#tms').waitFor({state:'visible'});assert.ok(await nojs.locator('#tms').isVisible());assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
   await page.goto(base+'aircraft.html');
   assert.ok(page.url().endsWith('projects.html#project-aircraft'));
   assert.ok(await page.locator('[data-project-panel="aircraft"]').isVisible());

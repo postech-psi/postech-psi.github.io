@@ -22,7 +22,7 @@ async function checkHomepage(browser) {
         await preview.locator('a').first().click();
         assert.ok(page.url().endsWith(`/projects.html#project-${id}`));
         assert.ok(await page.locator(`[data-project-panel="${id}"]`).isVisible());
-        assert.equal(await page.locator('h1').count(),1);
+        assert.equal(await page.locator('main h1:visible').count(),1);
         await page.goBack();
       }
     });

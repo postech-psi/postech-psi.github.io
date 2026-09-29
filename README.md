@@ -2,7 +2,7 @@
 
 The bilingual PSI website: [English](https://postech-psi.github.io/psi-website/) · [한국어](https://postech-psi.github.io/psi-website/ko/index.html).
 
-Fourteen routes in each language (28 generated pages, plus two Contact redirects) cover immediately switchable full PSLV and Aircraft panels, five current studies, fifteen historical research/award records, photo News, About and Support & Contact. The Projects navigation dropdown opens PSLV or Aircraft directly; old project URLs redirect there. The interface uses the authentic PSI logo in the header and footer, field photography/video and self-hosted Pretendard. Project descriptions distinguish implemented, configured and verified behaviour, with links to pinned repositories and the actual [test-results portal](https://postech-psi.github.io/test-results/).
+Fourteen routes in each language (28 generated pages, plus two Contact redirects) cover immediately switchable full PSLV and Aircraft panels, five current studies, fifteen historical research/award records, photo News, About and Support & Contact. The Projects navigation dropdown opens PSLV or Aircraft directly; old project URLs redirect there. The interface uses the authentic PSI logo in the header and footer, field photography/video and self-hosted Pretendard. PSLV combines its vehicle introduction, concise Avionics summary, combustion results and flights in one continuous page, with links to the main project repositories. About ends with the original laboratory group photograph.
 
 ## Edit and preview
 
@@ -33,7 +33,7 @@ node tools/export-launch-site.mjs path/to/staging
 
 Browser checks import the declared `playwright` package and use Chromium by default. To use installed Edge, set `PSI_BROWSER_CHANNEL=msedge`. Set `PSI_URL` to your preview origin (default port 8767); `check-structure.cjs` uses `PSI_BASE_URL` with a trailing slash. All paths work beneath `/psi-website/`. The Node-only build and export checks have no package dependencies.
 
-The TMS view ports the original results module, data, fonts and controls from the pinned `postech-psi/test-results` source. `docs/launch-site/assets/results/source-lock.json` owns its immutable export allowlist and digests. Edit site integration in `test-results-view.mjs`; do not change the locked results engine or create a second metric catalog. `npm run test:results` checks source parity and real browser behavior. The separate public portal remains an attribution link.
+The TMS view ports the original results module, data, fonts and controls from the pinned `postech-psi/test-results` source. `docs/launch-site/assets/results/source-lock.json` owns its immutable export allowlist and digests. Edit site integration in `test-results-view.mjs`; do not change the locked results engine or create a second metric catalog. `npm run test:results` checks source parity and real browser behavior. The page keeps a single main TMS repository link; source provenance remains recorded in the lock file.
 
 Inspect the staging export before publishing; run `node tools/export-launch-site.mjs` without a destination only for the intended root release.
 

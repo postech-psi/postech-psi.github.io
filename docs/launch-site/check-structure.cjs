@@ -10,8 +10,7 @@ const {chromium}=require('playwright');
  for(const prefix of ['', 'ko/']){
   await page.goto(base+prefix+'about.html');
   assert.equal(await page.locator('.join-steps,.faq-section,#learning').count(),0,'About removes the long join, FAQ and notebook sections');
-  assert.equal(await page.locator('.organisation-table tbody tr').count(),6,'About describes six roles in one table');
-  assert.equal(await page.locator('.organisation-table th[scope="row"]').count(),6,'Every organisation role is a table row heading');
+  assert.equal(await page.locator('.organisation-section,.organisation-table').count(),0,'About omits organisation and roles');
   assert.equal(await page.locator('main a[href="mailto:uikangee@postech.ac.kr"]').count(),1,'About has one direct president contact');
   assert.equal(await page.locator('main .supporter-list').count(),1,'Merged About has one supporter list');
   const recordsLink=page.locator('.site-nav a[href="records.html"]');
@@ -19,10 +18,8 @@ const {chromium}=require('playwright');
   await recordsLink.click();await page.waitForURL(base+prefix+'records.html');
   assert.equal(await page.locator('#research-archive').count(),1);
   await page.goto(base+prefix+'pslv.html#avionics');
-  const relatedLink=page.getByRole('link',{name:prefix?'관련 센서 퓨전 연구':'Related sensor-fusion research',exact:true});
-  assert.equal(await relatedLink.getAttribute('href'),'records.html#ksas-2025-fusion','Related historical work uses its canonical Records anchor');
-  await relatedLink.click();await page.waitForURL(base+prefix+'records.html#ksas-2025-fusion');
-  assert.equal(await page.locator('#ksas-2025-fusion').count(),1);
+  assert.equal(await page.locator('#avionics a').getAttribute('href'),'https://github.com/postech-psi/Avionics');
+  assert.ok(await page.locator('#tms').isVisible(),'Avionics and combustion tests share the continuous page');
   await page.goto(base+prefix+'index.html');
   assert.equal(await page.locator('.home-identity h1').count(),1,'Home identifies its core purpose');
   assert.equal(await page.locator('[data-program]').count(),2);
@@ -57,7 +54,7 @@ const {chromium}=require('playwright');
    await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
    assert.ok((await page.locator('[data-results-select] option:checked').innerText()).includes(selected.date),'Requested trial is identified by the compact selector');
    assert.equal(await page.locator('[data-results-detail] #dt-canvas-thrust canvas').count(),1,'Selected trial chart is mounted');
-   assert.ok(await page.locator('[data-system="tms"]').evaluate(el=>el.open));
+   assert.ok(await page.locator('#tms').isVisible());
   }
   for(const route of ['projects','aircraft','research','records','news','about'])for(const width of [320,390,768,1440]){
    await page.setViewportSize({width,height:1000});await page.goto(base+prefix+route+'.html');
