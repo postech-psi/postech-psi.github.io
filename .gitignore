@@ -1,1 +1,17 @@
+# Local dependencies and build output
 node_modules/
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+.bundle/
+vendor/
+
+# Local work and review output
+.worktrees/
+.superpowers/
+output/
+
+# Operating-system files
+.DS_Store
+Thumbs.db

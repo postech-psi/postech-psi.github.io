@@ -97,11 +97,7 @@
     }
   ],
   "publicFiles": [
-    "upstream/assets/charts.js",
-    "upstream/assets/site.js",
-    "upstream/assets/site.css",
     "upstream/assets/vendor/echarts.min.js",
-    "upstream/assets/fonts/PretendardVariable.woff2",
     "upstream/tests/index.json",
     "upstream/tests/2026-04-03/files/26.04.03 data_pipeline_data.txt",
     "upstream/tests/2026-04-08/files/TMS_4_pipeline_data.txt",

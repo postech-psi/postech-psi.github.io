@@ -1,6 +1,6 @@
 {
   "generator": "psi-launch-site",
-  "revision": "50ede583ae7994f56d8f52fdce647656560c523698d4bd87a5c74bdd612b4534",
+  "revision": "7b638a3334cb66d10e1ce8ed47cfb41c3555c1fa68a628f30748063f88ef50e7",
   "files": [
     {
       "path": "about.html",
@@ -214,28 +214,8 @@
     },
     {
       "path": "assets/results/source-lock.json",
-      "sha256": "bbfe4745a23d8e1b867a79acdae46da0020eb378be4f350f212539a45a498b1b",
-      "bytes": 5429
-    },
-    {
-      "path": "assets/results/upstream/assets/charts.js",
-      "sha256": "de5af1d8c6dfc3bc8fdd9770e3b4e8ff0a22e86d433f54eaf4eb58adef9a3a3a",
-      "bytes": 19887
-    },
-    {
-      "path": "assets/results/upstream/assets/fonts/PretendardVariable.woff2",
-      "sha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
-      "bytes": 2057688
-    },
-    {
-      "path": "assets/results/upstream/assets/site.css",
-      "sha256": "e716efb885280891b82a366d6f2888676abf5b8f7b4c9f9a332d8d566dc47ab7",
-      "bytes": 27626
-    },
-    {
-      "path": "assets/results/upstream/assets/site.js",
-      "sha256": "79d1a57b94572036ee827a8073a2c944cd7c82803319475074733123e64110ac",
-      "bytes": 61957
+      "sha256": "ede4186a0078793d883ad26e0c017c2e9885ce041fcb99eedab453a4b9c73e95",
+      "bytes": 5279
     },
     {
       "path": "assets/results/upstream/assets/vendor/echarts.min.js",
@@ -334,8 +314,8 @@
     },
     {
       "path": "assets/supporter-sources.md",
-      "sha256": "d5695e77f87f6bdd40ddc16d90107dd3060a00781b6963f3d0867404a411563d",
-      "bytes": 4223
+      "sha256": "441d37c9e4dc08962db2785e1e722ae9d7a31d60650becfc265eda1864f39072",
+      "bytes": 3605
     },
     {
       "path": "assets/team.webp",

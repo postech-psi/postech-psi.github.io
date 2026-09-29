@@ -17,29 +17,15 @@ plugins:
 exclude:
   - Gemfile
   - Gemfile.lock
-  - node_modules
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
+  - node_modules/
+  - vendor/
+  - .bundle/
   - .gitignore
+  - .gitattributes
   - README.md
-  - tools/
-  - docs/
-  # The redesigned static routes are exported from docs/launch-site.
-  # Preserve the former source pages without generating conflicting URLs.
-  - index.md
-  - about.md
-  - projects.md
-  - team.md
-  - events.md
-  - contact.md
-
-collections:
-  projects:
-    output: true
-  team:
-    output: true
+  - .worktrees/
+  - .superpowers/
+  - output/
 
 navigation:
   - title: Home
