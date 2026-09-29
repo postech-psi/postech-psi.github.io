@@ -2,7 +2,7 @@
 
 The bilingual PSI website: [English](https://postech-psi.github.io/psi-website/) · [한국어](https://postech-psi.github.io/psi-website/ko/index.html).
 
-Fourteen routes in each language (28 generated pages, plus two Contact redirects) cover immediately switchable full PSLV and Aircraft panels, five current studies, fifteen historical research/award records, photo News, About and Support & Contact. The Projects navigation dropdown opens PSLV or Aircraft directly; old project URLs redirect there. The interface uses the authentic PSI logo in the header and footer, field photography/video and self-hosted Pretendard. PSLV combines its vehicle introduction, concise Avionics summary, combustion results and flights in one continuous page, with links to the main project repositories. About ends with the original laboratory group photograph.
+Fourteen routes in each language (28 generated pages, plus two Contact redirects) cover immediately switchable full PSLV and Aircraft panels, five current studies, fifteen historical research/award records, photo News, About and Support & Contact. The Projects navigation dropdown opens PSLV or Aircraft directly; old project URLs redirect there. The interface uses the authentic PSI logo in the header and footer, field photography/video and self-hosted Pretendard. PSLV combines its vehicle introduction, Avionics overview, interactive flight reconstruction, combustion results and flights in one continuous page, with links to the main project repositories. About ends with the original laboratory group photograph.
 
 ## Edit and preview
 

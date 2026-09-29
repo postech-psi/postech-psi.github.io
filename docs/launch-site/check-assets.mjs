@@ -6,11 +6,11 @@ import {render} from './templates.mjs';
 // A returning visitor must request the version matching the generated document.
 for (const language of ['en','ko']) for (const page of ['index','projects']) {
   const html=render(page,language);
-  for (const asset of ['site.css','program-pages.css','site.js','motion.js']) {
+  for (const asset of ['site.css','program-pages.css','site.js','motion.js',...(page==='projects'?['telemetry.mjs']:[])]) {
     const digest=createHash('sha256').update(readFileSync(new URL(asset,import.meta.url))).digest('hex').slice(0,12);
     assert.ok(html.includes(asset+'?v='+digest),asset+' must use its current content fingerprint');
   }
-  assert.doesNotMatch(html,/<script[^>]+telemetry\.mjs/,'The retired replay is not loaded by the public pages');
+  if(page!=='projects')assert.doesNotMatch(html,/<script[^>]+telemetry\.mjs/,'Replay is only loaded on Projects');
 }
 const assetsIndex=readFileSync(new URL('./assets/index.html',import.meta.url),'utf8');
 assert.match(assetsIndex,/name="robots" content="noindex,nofollow"/);

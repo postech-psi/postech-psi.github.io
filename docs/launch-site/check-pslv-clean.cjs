@@ -8,7 +8,7 @@ async function checkPslvClean(browser){
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  const fits=async label=>assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,label);
  const tabsClear=()=>page.waitForFunction(()=>{const bottom=document.querySelector('.site-header').getBoundingClientRect().bottom;return [...document.querySelectorAll('[data-project-tab]')].every(tab=>{const r=tab.getBoundingClientRect();return r.top>=bottom-1&&r.bottom<=innerHeight;});});
- const allSections=async()=>{for(const id of ['vehicle','avionics','tms','flights'])assert.ok(await page.locator('#'+id).isVisible(),`${id} stays in the continuous PSLV page`);};
+ const allSections=async()=>{for(const id of ['vehicle','avionics','flight-reconstruction','tms','flights'])assert.ok(await page.locator('#'+id).isVisible(),`${id} stays in the continuous PSLV page`);};
  const heroMetrics=()=>page.locator('[data-project-panel]:visible .project-hero').evaluate(hero=>{const heading=hero.querySelector('h1'),style=getComputedStyle(heading),box=heading.getBoundingClientRect();return{font:style.fontSize,line:style.lineHeight,x:Math.round(box.x),y:Math.round(box.y),grid:getComputedStyle(hero).gridTemplateColumns};});
  const natural=async selector=>{const photo=page.locator(selector);await photo.scrollIntoViewIfNeeded();await photo.evaluate(img=>img.decode());assert.ok(await photo.evaluate(img=>Math.abs(img.clientHeight-img.clientWidth*img.naturalHeight/img.naturalWidth)<1),'Complete photograph retains its natural proportions');};
  try{
@@ -19,16 +19,18 @@ async function checkPslvClean(browser){
      await setTheme(page,theme);await page.locator('[data-project-tab="pslv"]').click();await tabsClear();await page.evaluate(()=>document.fonts.ready);
      const metrics=await heroMetrics();await allSections();await fits(`${locale}PSLV ${theme} ${width}`);
      assert.equal(await page.locator('main h1:visible').count(),1);
-     assert.equal(await page.locator('[data-pslv-view],.case-sources,[data-telemetry]').count(),0,'No separate reading views or long implementation material');
+     assert.equal(await page.locator('[data-pslv-view],.case-sources').count(),0,'No separate reading views or implementation references');
+     assert.equal(await page.locator('[data-telemetry]').count(),1,'The original reconstruction sits in the continuous page');
      assert.equal(await page.locator('#avionics dl>div').count(),3);
-     const length=await page.locator('#avionics').evaluate(el=>el.textContent.length);assert.ok(length<(locale?400:700),'Avionics remains concise');
+     const copy=await page.locator('#avionics').innerText();
+     for(const term of ['Portenta H7','M7','M4','microSD','XBee','IMU','BMP390','UKF','GNSS'])assert.ok(copy.includes(term),`Avionics explains ${term}`);
      assert.deepEqual(await page.locator('#project-pslv a[href^="https://"]').evaluateAll(as=>as.map(a=>a.href)),['https://github.com/postech-psi/Avionics','https://github.com/postech-psi/TMS'],'Only the two main repository references remain');
      assert.match(await page.locator('.pslv-flight-records').innerText(),locale?/회수 실패/:/recovery failed/);
      await page.locator('[data-project-tab="aircraft"]').click();await tabsClear();
      assert.deepEqual(await heroMetrics(),metrics,'Programme titles share their typography and grid');await fits(`${locale}Aircraft ${theme} ${width}`);
      await page.locator('[data-project-tab="pslv"]').click();await tabsClear();
     }
-    for(const id of ['avionics','tms','flights']){await page.locator(`.project-jumps a[href="#${id}"]`).click();await allSections();}
+    for(const id of ['avionics','flight-reconstruction','tms','flights']){await page.locator(`.project-jumps a[href="#${id}"]`).click();await allSections();}
     await natural('.pslv-engineering img');
     assert.deepEqual(await page.locator('.pslv-engineering img').evaluate(img=>[img.naturalWidth,img.naturalHeight]),[747,819]);
     await page.locator('.project-jumps a[href="#tms"]').click();await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
@@ -50,7 +52,7 @@ async function checkPslvClean(browser){
     await natural('.about-team img');await natural('.about-people img');
     assert.ok((await page.locator('.about-team img').boundingBox()).width<=640,'Closing photograph stays at a restrained size');
    }
-   for(const anchor of ['project-pslv','vehicle','systems','structure','control','avionics','architecture','estimation','recording','ground-station','tms','test-results','instrument','processing','analysis','flight-record','recovery','flights']){
+   for(const anchor of ['project-pslv','vehicle','systems','structure','control','avionics','architecture','estimation','recording','ground-station','flight-reconstruction','tms','test-results','instrument','processing','analysis','flight-record','recovery','flights']){
     await page.goto(`${base}/${locale}pslv.html#${anchor}`);await page.waitForURL(`**/projects.html#${anchor}`);await allSections();assert.equal(await page.locator('#'+anchor).count(),1);
    }
    await page.goto(`${base}/${locale}projects.html?test=2026-04-08-combustion#test-results`);await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});

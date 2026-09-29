@@ -16,7 +16,7 @@ function checkCopy() {
     assert.ok(news.includes(lang ? 'PSI 아카이브의 사진입니다.' : 'Photographs from the PSI archive.'));
     assert.ok(!news.includes('archive previews') && !news.includes('미리보기 이미지로 확보'), 'Archive credit excludes acquisition narration');
     for (const fact of ['Portenta H7','GNSS','323.79 N','484.66 N s','2331.2 ms','38.018 bar']) assert.ok(pslv.includes(fact),`Retain essential hardware and measured result: ${fact}`);
-    assert.ok(pslv.includes(lang ? 'GNSS 위치는 별도로 기록합니다' : 'GNSS records position separately'));
+    assert.ok(pslv.includes(lang ? 'GNSS 위치는 별도로 기록하며 이 수직 필터의 입력으로 사용하지 않습니다' : 'GNSS position is logged separately and does not feed this vertical filter'));
     assert.ok(!pslv.includes('Implementation references')&&!pslv.includes('구현 참고 자료'));
     const about = read(lang, 'about');
     assert.ok(!home.includes('data-program-choice'),'Homepage no longer offers a second project-switch control');

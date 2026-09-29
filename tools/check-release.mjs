@@ -19,7 +19,7 @@ assert.doesNotMatch(assetsIndex,/\.mp4|\.webp|directory|listing/i);
 for(const prefix of ['', 'ko/'])for(const route of routes)assert.ok(names.includes(`${prefix}${route}.html`));
 assert.equal(routes.length,14);
 for(const name of ['site.css','site.js','motion.js','program-pages.css','assets/onboard.mp4','assets/onboard-poster.webp','assets/Pretendard.woff2','assets/Pretendard-LICENSE.txt','assets/rocket-detail.webp','assets/pslv-systems.png','assets/team.webp'])assert.ok(names.includes(name),'Required runtime asset '+name);
-assert.ok(!names.includes('assets/archive-telemetry.json'),'The retired replay dataset is no longer a runtime dependency');
+assert.ok(names.includes('assets/archive-telemetry.json'),'The original recorded flight excerpt ships with the replay');
 assert.ok(!names.some(name=>/docs\/|review\/|manifest|spring-community|Barlow|\.(pdf|pptx|cjs)$/i.test(name)),'Only the intended public subset is exported');
 for(const name of ['postech','kai-light','kai-dark','mathworks-light','mathworks-dark','ansys','ansys-light'])assert.ok(names.includes(`assets/supporter-${name}.png`),'Supporter logo exports: '+name);
 assert.ok((await readFile(join(destination,'about.html'),'utf8')).includes('https://me.postech.ac.kr/ko/'),'Mechanical Engineering keeps its own entry on the merged page');
