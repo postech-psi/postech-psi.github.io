@@ -1,6 +1,6 @@
 {
   "generator": "psi-launch-site",
-  "revision": "7b638a3334cb66d10e1ce8ed47cfb41c3555c1fa68a628f30748063f88ef50e7",
+  "revision": "d506384ec362305ef6f4d91f9a006960c5bb75231f1aaf610f8875008c85657b",
   "files": [
     {
       "path": "about.html",
@@ -499,8 +499,8 @@
     },
     {
       "path": "program-pages.css",
-      "sha256": "f55a8481400fa3556e143c3bb1d2ff9a88635aecabd1c205073663605e0a56d4",
-      "bytes": 35584
+      "sha256": "34b8fed1c8b4bb8611fa94797b9d1296f6581b555807d53854f81977c06ca611",
+      "bytes": 35214
     },
     {
       "path": "projects.html",
@@ -529,8 +529,8 @@
     },
     {
       "path": "site.js",
-      "sha256": "8a5a5b53e9565191d3d8808decb9c9d163ae1b11beebadb605b58fdb1937def1",
-      "bytes": 35754
+      "sha256": "d2a59a4e323644526b29790602dfc61abe8ffadadecee149aa25201f9dafcceb",
+      "bytes": 35104
     },
     {
       "path": "support.html",
