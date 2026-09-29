@@ -66,9 +66,9 @@ h3{font-size:24px;line-height:1.3}
 
 /* Shared project and record navigation. */
 .project-tabs{display:flex;gap:8px;padding-bottom:16px}
-.project-tabs button{min-height:44px;padding:10px 22px;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text);font:inherit;cursor:pointer}
-.project-tabs button[aria-selected=true]{background:var(--text);border-color:var(--text);color:var(--canvas)}
-.project-tabs button:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.project-tabs :is(button,[data-project-tab]){display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 22px;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--text);font:inherit;text-decoration:none;cursor:pointer}
+.project-tabs :is(button,[data-project-tab])[aria-selected=true]{background:var(--text);border-color:var(--text);color:var(--canvas)}
+.project-tabs :is(button,[data-project-tab]):focus-visible{outline:2px solid var(--text);outline-offset:3px}
 [data-project-panel][hidden]{display:none}
 [data-project-panel] [id]{scroll-margin-top:var(--header-clearance)}
 .flight-ledger article{padding-block:20px;gap:32px;grid-template-columns:170px minmax(0,1fr)}
@@ -209,7 +209,7 @@ h3{font-size:24px;line-height:1.3}
  .current-research-invitation,.testing-intro{align-items:flex-start;flex-direction:column;gap:20px}
  .current-research-invitation{padding-block:36px}
  .test-actions{gap:12px 20px}
- .project-tabs button{flex:1}
+ .project-tabs :is(button,[data-project-tab]){flex:1}
  .study-feature,.study-feature:nth-of-type(even){grid-template-columns:1fr;gap:24px}
  .study-intro{padding-bottom:16px}
  .study-feature{padding-block:24px 32px}
@@ -312,10 +312,7 @@ h3{font-size:24px;line-height:1.3}
 /* Both programmes share their opening, type scale and research/engineering links. */
 .project-navigation{display:flex;align-items:center;gap:48px;padding-block:28px 8px;font-size:15px}
 .project-navigation>span{color:var(--secondary)}
-.project-navigation .project-tabs{gap:28px;padding:0}
-.project-navigation [data-project-tab]{display:flex;align-items:center;min-height:44px;padding:0;border-bottom:2px solid transparent;text-decoration:none;color:var(--text)}
-.project-navigation [aria-selected=true]{border-bottom-color:var(--text);font-weight:600}
-.project-navigation a:focus-visible{outline:2px solid var(--text);outline-offset:5px}
+.project-navigation .project-tabs{gap:8px;padding:0;font-size:17px}
 .project-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10%;align-items:start;padding-block:40px 72px}
 .project-hero h1{font-size:clamp(64px,8vw,108px);line-height:1;letter-spacing:-.06em}
 .project-hero p{font-size:17px;line-height:1.65;margin-top:20px;max-width:42ch}
@@ -403,8 +400,9 @@ h3{font-size:24px;line-height:1.3}
  .about-founding h3{font-size:20px}
  .about-founding p{font-size:14px}
  .about-contact{padding-bottom:24px}
- .project-navigation{gap:24px;padding-top:16px}
- .project-navigation .project-tabs{gap:24px}
+ .project-navigation{flex-direction:column;align-items:flex-start;gap:12px;padding-top:16px}
+ .project-navigation .project-tabs{width:100%;font-size:16px}
+ .project-navigation [data-project-tab]{padding-inline:12px}
  .project-hero{grid-template-columns:minmax(0,1fr);gap:32px;padding-block:28px 40px}
  .project-hero h1{font-size:clamp(52px,16vw,72px)}
  .project-hero .project-subtitle{font-size:15px;margin-top:12px}

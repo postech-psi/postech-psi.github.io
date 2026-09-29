@@ -1,10 +1,10 @@
 {
   "generator": "psi-launch-site",
-  "revision": "66cdbec595257119b5d4081e4c66c297e2989a63c2d1931403a2d48d6dd3934c",
+  "revision": "50ede583ae7994f56d8f52fdce647656560c523698d4bd87a5c74bdd612b4534",
   "files": [
     {
       "path": "about.html",
-      "sha256": "76e800406a07c885dd5d18247342d27b9b76959cf26da172bb51207cef3f959a",
+      "sha256": "d2df52b6932e63af495d7b95644d716e3f0d6e61aa3af4f77e4864190cb5e244",
       "bytes": 13217
     },
     {
@@ -414,12 +414,12 @@
     },
     {
       "path": "gallery.html",
-      "sha256": "9d2ea018d5339981d57277bbbcdf0d9de2faba1cdf354df7facc7d6581f66922",
+      "sha256": "9ba53cb574a08bbd8ba89d22cc038f94ac542d81762db31d3595bdf6e8f009e7",
       "bytes": 17440
     },
     {
       "path": "index.html",
-      "sha256": "81364e93ddbad77c36494b841b30a62279539da8a9a1705658c657066fe0c4d8",
+      "sha256": "5de435a7750e2f82b1a56fdc321081ed019553474e875dec08e15993a3ba272a",
       "bytes": 11951
     },
     {
@@ -429,7 +429,7 @@
     },
     {
       "path": "ko/about.html",
-      "sha256": "d6a620e851864b726836f0c35f2dc6b41cee32daeecb8152873033aaac852e67",
+      "sha256": "4136aadb2fb594a58d86270a2d654353ee69062ede5cd844ab395ac7d006f2a8",
       "bytes": 13605
     },
     {
@@ -449,12 +449,12 @@
     },
     {
       "path": "ko/gallery.html",
-      "sha256": "0c4481b1012612f82048dcb3b8f297b12cee6b0da54590dd5627d838c3bf1c2f",
+      "sha256": "ad7cc319ec1752a1f8a6969f9c817bf3faf1b89cb70ebb335963fbeac027a431",
       "bytes": 17805
     },
     {
       "path": "ko/index.html",
-      "sha256": "2c0f4f64723bb17e1d1281845de04740b097c1bfb4a696f6508e8d677506062a",
+      "sha256": "1418dc549706565df1b2a3f9f3cdd0ee958415a9cdc4d480592ec97b85f9811f",
       "bytes": 12223
     },
     {
@@ -474,7 +474,7 @@
     },
     {
       "path": "ko/projects.html",
-      "sha256": "50e3febae692ba1008de59985bc5fe8a1dbdd8dd7726e81ba41d6b02fa43856f",
+      "sha256": "a4ab89521dae1f5ed52c38102e86411b9ffbc5f4094ec14745d75e144a514437",
       "bytes": 25349
     },
     {
@@ -484,12 +484,12 @@
     },
     {
       "path": "ko/records.html",
-      "sha256": "d81a4aa508ff8cc0d9892e502b24b3ebbaa6bfe4a74cbce03d9bbb6c1b7981d8",
+      "sha256": "cb32005e258b2585a86b19ac6e850ced0c7e901ecc938c88cb1ee96fe8dfaa7f",
       "bytes": 22139
     },
     {
       "path": "ko/research.html",
-      "sha256": "ed4299a94f031c03a6b0eb87b110599ff951e189aa9caec37f300e007692ab9d",
+      "sha256": "bd33c00dd5ec060ba256561896cd5796051a95b216238f8b40c3515d8838010c",
       "bytes": 18070
     },
     {
@@ -519,12 +519,12 @@
     },
     {
       "path": "program-pages.css",
-      "sha256": "1af87f28df5fc66de24f429b7a6e95a425ad2b46b62098e11ca04ac5b61b3a6e",
-      "bytes": 35619
+      "sha256": "f55a8481400fa3556e143c3bb1d2ff9a88635aecabd1c205073663605e0a56d4",
+      "bytes": 35584
     },
     {
       "path": "projects.html",
-      "sha256": "6fb150bad418ea81f61767d403556be3cc18b722780d96f05f7725d23dc4e97b",
+      "sha256": "67e2293218a02a5aaacfb61cf70d79457225a1e359e0016061ae4956d4dfa0fb",
       "bytes": 24790
     },
     {
@@ -534,12 +534,12 @@
     },
     {
       "path": "records.html",
-      "sha256": "3b876b4965d22233c34ff8d663cf8d5d7f227c644cf49935b290fe2f94c4413b",
+      "sha256": "ff9c92ac447a35b89a1a01a8024277ca12fcb0510049d57ab9d40c105ebb546a",
       "bytes": 23514
     },
     {
       "path": "research.html",
-      "sha256": "c71d95c8ef0aca8b5996a8032915de11ed10136a49066a8ba4cc353748ed8e7b",
+      "sha256": "2f0056679eb58a22c4fa02f24987920711990b678cc832ac2e2c2d587d9e8ee7",
       "bytes": 17536
     },
     {
