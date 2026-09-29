@@ -62,7 +62,7 @@ async function checkLayoutRefinement(browser){
    assert.equal(src.searchParams.get('marker'),'36.02159,129.32135');
    assert.ok((await page.locator('#contact').innerText()).includes('풍동동'));
    for(const width of [390,1440]){
-    await page.setViewportSize({width,height:1000});const box=await map.boundingBox();assert.ok(box.height<=240&&box.width<=400,'Map stays small');
+    await page.setViewportSize({width,height:1000});const box=await map.boundingBox();const column=await page.locator('.campus-section').boundingBox();assert.ok(box.height<=240&&box.width<=column.width,'Map stays compact and within the Visit column');
     for(const theme of ['light','dark']){await setTheme(page,theme);assert.equal(await page.locator('.supporter-list').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');}
    }
    await page.locator('[data-contact-compose] summary').focus();await page.keyboard.press('Enter');assert.ok(await form.isVisible());

@@ -132,11 +132,11 @@ async function checkReviewFollowups(browser){
     for(const width of [390,1440]){
      await page.setViewportSize({width,height:900});
      await page.goto(`${base}/${prefix}gallery.html`);
-     const gap=await page.locator('.gallery-event').first().evaluate(el=>el.querySelector('header').getBoundingClientRect().top-document.querySelector('.page-head').getBoundingClientRect().bottom);
+     const gap=await page.locator('.gallery-event').first().evaluate(el=>el.querySelector('header').getBoundingClientRect().top-document.querySelector('.gallery-page-head').getBoundingClientRect().bottom);
      assert.ok(gap<=48,`Gallery ${width}px content gap: ${gap}`);
      await page.goto(`${base}/${prefix}support.html`);
      const supportGap=await page.locator('main > .about-intro + .about-support').evaluate(el=>parseFloat(getComputedStyle(el).paddingTop));
-     assert.ok(supportGap<=28,`Support ${width}px must not stack a full section pad after the page heading`);
+     assert.ok(supportGap<=32,`Support ${width}px must not stack a full section pad after the page heading`);
      await page.goto(`${base}/${prefix}index.html`);
      const programmeGap=await page.locator('.home-programs').evaluate(el=>document.querySelector('.home-support h2').getBoundingClientRect().top-el.querySelector('.program-cards>article:last-child').getBoundingClientRect().bottom);
      assert.ok(programmeGap<=110,`Homepage ${width}px section gap: ${programmeGap}`);

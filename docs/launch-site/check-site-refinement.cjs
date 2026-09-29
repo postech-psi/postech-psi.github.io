@@ -8,7 +8,7 @@ async function checkSiteRefinement(browser){
  const check=async(name,run)=>{try{await run();console.log('PASS: '+name);}catch(e){failures.push(name+': '+e.message);}};
  for(const locale of ['', 'ko/']){
   await check(locale+'page introductions follow their heading',async()=>{
-   for(const route of ['research','records','gallery']){
+   for(const route of ['research','records']){
     await page.goto(`${base}/${locale}${route}.html`);
     const geometry=await page.locator('.page-head').evaluate(head=>{
      const h=head.querySelector('h1').getBoundingClientRect(),p=head.querySelector('.page-intro');
@@ -88,6 +88,8 @@ async function checkSiteRefinement(browser){
   });
   await check(locale+'gallery is chronological and retains every photograph',async()=>{
    await page.goto(`${base}/${locale}gallery.html`);
+   assert.equal(await page.locator('.gallery-page-head h1').count(),1);
+   assert.ok((await page.locator('.gallery-page-head>p').innerText()).length>0,'Gallery has a short introduction and album count');
    assert.equal(await page.locator('[data-gallery-open]').count(),14);
    const dates=await page.locator('[data-gallery-event] time').evaluateAll(nodes=>nodes.map(n=>n.dateTime));
    assert.deepEqual(dates,[...dates].sort().reverse());

@@ -43,7 +43,9 @@ async function checkPhotoLayout(browser){
     const photos=await page.locator('#launch-dec-2025 .event-photos').boundingBox();
     assert.ok(header.x+header.width<=photos.x,'Album information sits beside the photographs');
     const widths=await page.locator('#launch-dec-2025 figure').evaluateAll(items=>items.map(item=>item.getBoundingClientRect().width));
-    assert.ok(widths[0]>widths[2]*1.7&&widths[2]>widths[1]*1.5,'Wide lead, prominent detail and narrow portraits');
+    assert.ok(widths[0]>widths[2]*2,'Landscape leads remain substantially larger than portraits');
+    const portraits=await page.locator('#launch-dec-2025 figure:nth-child(n+2):nth-child(-n+4) img').evaluateAll(images=>images.map(img=>img.getBoundingClientRect().height));
+    assert.ok(Math.max(...portraits)-Math.min(...portraits)<2,'The three uncropped portraits share a baseline');
     await natural('.event-photos img');
     assert.equal(await page.locator('[data-gallery-open]').count(),14);
    });
@@ -58,7 +60,11 @@ async function checkPhotoLayout(browser){
     for(const route of ['index','projects','research','gallery','about']){
      await load(locale+route);
      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,route);
-     if(route==='gallery')await natural('.event-photos img');
+     if(route==='gallery'){
+      await natural('.event-photos img');
+      const portraits=await page.locator('.event-photos figure.portrait').evaluateAll(items=>items.map(item=>item.getBoundingClientRect().width));
+      assert.ok(portraits.every(width=>width>=240),'Phone portraits remain large enough to inspect');
+     }
      if(route==='about')await natural('.about-team img,.about-founding img,.about-people img');
      if(route==='research')assert.ok(await page.locator('.study-feature').evaluateAll(items=>items.every(item=>item.querySelector('.study-visual').getBoundingClientRect().top<item.querySelector('.study-copy').getBoundingClientRect().top)));
     }

@@ -120,3 +120,7 @@ For this layout, run `node check.cjs`, `node check-pslv-clean.cjs`, `node check-
 ### Continuous PSLV follow-up — 29 September 2026
 
 The owner requested all engineering material inline and essential Avionics content only. `engineering-pages.mjs` renders a focused Avionics explanation, the original flight reconstruction and the original combustion-results component, with just the main Avionics and TMS repository links. The result datasets and chart engine remain pinned and unchanged. The laboratory group photo closes About at a maximum width of 640px on desktop and 360px on mobile, with its full proportions. The shared footer is retained. `check-engineering.cjs` runs the continuous-page and flight-reconstruction regression suites, including original data, playback controls, responsive chart labels, no-JavaScript output and failed-data fallback.
+
+### Composition refinement — 29 September 2026
+
+PSLV pairs its hardware photograph with the Avionics introduction, then presents the three technical topics across the page. Reconstruction readouts align in four columns on desktop and two on phones. Gallery uses a quiet caption column and larger landscape photographs; desktop portrait groups share a baseline without cropping, while phone portraits stack at a readable size. About gives the introduction, supporters, people and contact sections distinct proportions. Founding stays beneath Contact PSI and the laboratory photograph closes the page. Pretendard, the neutral palette, original artwork, content and interactive data remain unchanged.
