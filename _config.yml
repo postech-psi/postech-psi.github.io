@@ -1,7 +1,7 @@
 title: POSTECH AeroSpace Initiatives
 description: POSTECH AeroSpace Initiatives (PSI) is a student aerospace research club at POSTECH developing rockets, avionics, propulsion test systems, and flight operations capability.
 url: "https://postech-psi.github.io"
-baseurl: "/psi-website"
+baseurl: ""
 lang: en
 
 author:
