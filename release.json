@@ -1,6 +1,6 @@
 {
   "generator": "psi-launch-site",
-  "revision": "d506384ec362305ef6f4d91f9a006960c5bb75231f1aaf610f8875008c85657b",
+  "revision": "64ebfe9cd7e0157c797e0c0e834ae1c800f15c45209bd5154e87dfa9d759d857",
   "files": [
     {
       "path": "about.html",
@@ -21,6 +21,11 @@
       "path": "assets/Pretendard.woff2",
       "sha256": "9599f12fd42fc0bce1cd50b47a0c022e108d7aa64dd0d1bb0ed44f3282d900b4",
       "bytes": 2057688
+    },
+    {
+      "path": "assets/aircraft-cad.png",
+      "sha256": "25e7c3507842703f7f19c3a0a7440ba15ee692b5d03b0e3fcd6f2c7da6bf5845",
+      "bytes": 498071
     },
     {
       "path": "assets/archive-telemetry.json",
@@ -454,8 +459,8 @@
     },
     {
       "path": "ko/projects.html",
-      "sha256": "a4ab89521dae1f5ed52c38102e86411b9ffbc5f4094ec14745d75e144a514437",
-      "bytes": 25349
+      "sha256": "d6a8dead71089fc9a5a7643953e7fda211f4e0db5a56adb262b24cc4dc04bbbc",
+      "bytes": 25130
     },
     {
       "path": "ko/pslv.html",
@@ -504,8 +509,8 @@
     },
     {
       "path": "projects.html",
-      "sha256": "67e2293218a02a5aaacfb61cf70d79457225a1e359e0016061ae4956d4dfa0fb",
-      "bytes": 24790
+      "sha256": "18e6f9cb607467e3c035299e50200bb0880aefa04b65053f68c90063174553aa",
+      "bytes": 24536
     },
     {
       "path": "pslv.html",
